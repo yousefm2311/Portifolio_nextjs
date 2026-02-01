@@ -8,7 +8,7 @@ import { deleteFromOSS, getOssClient } from '@/lib/oss';
 
 export const runtime = 'nodejs';
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const limited = enforceRateLimit(req, 'studio');
   if (limited) return limited;
 
@@ -16,7 +16,8 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
   if (session instanceof NextResponse) return session;
 
   await connectToDatabase();
-  const media = await Media.findById(params.id);
+  const resolved = await params;
+  const media = await Media.findById(resolved.id);
   if (!media) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
@@ -33,7 +34,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
   await AuditLog.create({
     action: 'delete',
     entity: 'media',
-    entityId: params.id,
+    entityId: resolved.id,
     byEmail: session.user?.email ?? 'unknown',
     meta: { url: media.url }
   });

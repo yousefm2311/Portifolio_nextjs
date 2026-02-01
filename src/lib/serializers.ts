@@ -67,6 +67,7 @@ export function normalizeApp(doc: any): AppDTO {
       cover,
       gallery
     },
+    mediaDisplay: doc.mediaDisplay ?? { cover: 'full', gallery: 'phone' },
     caseStudy: doc.caseStudy ?? {
       problem: '',
       solution: '',

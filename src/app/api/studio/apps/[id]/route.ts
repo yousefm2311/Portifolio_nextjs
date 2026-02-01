@@ -8,7 +8,7 @@ import { enforceAdmin, enforceRateLimit } from '@/lib/api-helpers';
 
 export const runtime = 'nodejs';
 
-export async function PATCH(req: Request, { params }: { params: { id: string } }) {
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const limited = enforceRateLimit(req, 'studio');
   if (limited) return limited;
 
@@ -27,7 +27,8 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
     cleaned.publishedAt = new Date();
   }
   await connectToDatabase();
-  const updated = await App.findByIdAndUpdate(params.id, cleaned, { new: true });
+  const resolved = await params;
+  const updated = await App.findByIdAndUpdate(resolved.id, cleaned, { new: true });
   if (!updated) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
@@ -43,7 +44,7 @@ export async function PATCH(req: Request, { params }: { params: { id: string } }
   return NextResponse.json({ ok: true });
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const limited = enforceRateLimit(req, 'studio');
   if (limited) return limited;
 
@@ -51,7 +52,8 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
   if (session instanceof NextResponse) return session;
 
   await connectToDatabase();
-  const deleted = await App.findByIdAndDelete(params.id);
+  const resolved = await params;
+  const deleted = await App.findByIdAndDelete(resolved.id);
   if (!deleted) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }
@@ -59,7 +61,7 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
   await AuditLog.create({
     action: 'delete',
     entity: 'app',
-    entityId: params.id,
+    entityId: resolved.id,
     byEmail: session.user?.email ?? 'unknown',
     meta: { title: deleted.title }
   });

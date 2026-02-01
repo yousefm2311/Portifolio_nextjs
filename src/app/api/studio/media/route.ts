@@ -58,7 +58,9 @@ export async function POST(req: Request) {
       key,
       body: buffer,
       contentType: file.type,
-      cacheControl: file.type === 'application/pdf' ? 'public, max-age=3600' : undefined
+      cacheControl: file.type === 'application/pdf' ? 'public, max-age=3600' : undefined,
+      contentDisposition: file.type === 'application/pdf' ? 'inline' : 'inline',
+      filename: file.name
     });
 
     mediaPayload = {

@@ -5,7 +5,8 @@ import { getAppById } from '@/lib/app-service';
 export const dynamic = 'force-dynamic';
 
 export default async function EditAppPage({ params }: { params: { id: string } }) {
-  const app = await getAppById(params.id);
+  const resolvedParams = await params;
+  const app = await getAppById(resolvedParams.id);
   if (!app) return notFound();
 
   return (

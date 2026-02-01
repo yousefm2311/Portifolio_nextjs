@@ -42,6 +42,10 @@ const defaultState: AppDTO = {
     cover: undefined,
     gallery: []
   },
+  mediaDisplay: {
+    cover: 'full',
+    gallery: 'phone'
+  },
   caseStudy: {
     problem: '',
     solution: '',
@@ -66,6 +70,42 @@ export default function AppForm({
   const [form, setForm] = useState<AppDTO>(initial ?? defaultState);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [serverDetails, setServerDetails] = useState<Record<string, string[]>>({});
+  const [missing, setMissing] = useState<string[]>([]);
+
+  const requiredFields = [
+    { key: 'title', label: 'Title (Arabic)', tab: 'basic' as const },
+    { key: 'slug', label: 'Slug', tab: 'basic' as const },
+    { key: 'shortDesc', label: 'Short description', tab: 'basic' as const },
+    { key: 'description', label: 'Description', tab: 'basic' as const },
+    { key: 'category', label: 'Category', tab: 'basic' as const },
+    { key: 'demo', label: 'Demo (Video أو Embed URL)', tab: 'demo' as const },
+    { key: 'caseStudy.problem', label: 'Problem', tab: 'case' as const },
+    { key: 'caseStudy.solution', label: 'Solution', tab: 'case' as const },
+    { key: 'caseStudy.architecture', label: 'Architecture', tab: 'case' as const },
+    { key: 'caseStudy.challenges', label: 'Challenges', tab: 'case' as const },
+    { key: 'caseStudy.results', label: 'Results', tab: 'case' as const }
+  ];
+
+  const getMissingRequired = () => {
+    const missingFields: string[] = [];
+    if (!form.title?.trim()) missingFields.push('Title (Arabic)');
+    if (!form.slug?.trim()) missingFields.push('Slug');
+    if (!form.shortDesc?.trim()) missingFields.push('Short description');
+    if (!form.description?.trim()) missingFields.push('Description');
+    if (!form.category) missingFields.push('Category');
+    if (form.demo.type === 'flutter_web') {
+      if (!form.demo.embedUrl?.trim()) missingFields.push('Embed URL (Flutter Web)');
+    } else if (form.demo.type === 'video' || form.demo.type === 'interactive_video') {
+      if (!form.demo.video && !form.demo.videoId) missingFields.push('Demo Video');
+    }
+    if (!form.caseStudy.problem?.trim()) missingFields.push('Problem');
+    if (!form.caseStudy.solution?.trim()) missingFields.push('Solution');
+    if (!form.caseStudy.architecture?.trim()) missingFields.push('Architecture');
+    if (!form.caseStudy.challenges?.trim()) missingFields.push('Challenges');
+    if (!form.caseStudy.results?.trim()) missingFields.push('Results');
+    return missingFields;
+  };
 
   const updateField = (key: keyof AppDTO, value: any) => {
     setForm((prev) => ({ ...prev, [key]: value }));
@@ -89,6 +129,15 @@ export default function AppForm({
   const save = async () => {
     setSaving(true);
     setError(null);
+    setServerDetails({});
+    const missingFields = getMissingRequired();
+    if (missingFields.length > 0) {
+      setMissing(missingFields);
+      setSaving(false);
+      setError('تحقق من الحقول الإلزامية.');
+      return;
+    }
+    setMissing([]);
     const resolvedVideoId = form.demo.video?._id ?? (form.demo.videoId || undefined);
 
     const payload = {
@@ -115,6 +164,7 @@ export default function AppForm({
         coverId: form.media.cover?._id,
         galleryIds: form.media.gallery?.map((item) => item._id)
       },
+      mediaDisplay: form.mediaDisplay,
       caseStudy: form.caseStudy,
       status: form.status
     };
@@ -135,11 +185,26 @@ export default function AppForm({
     }
 
     const data = await res.json().catch(() => ({}));
-    setError(data?.error ? 'تحقق من المدخلات المطلوبة.' : 'حدث خطأ أثناء الحفظ.');
+    if (data?.error?.fieldErrors) {
+      setServerDetails(data.error.fieldErrors as Record<string, string[]>);
+      setError('تحقق من المدخلات المطلوبة.');
+    } else {
+      setError(data?.error ?? 'حدث خطأ أثناء الحفظ.');
+    }
   };
 
   return (
     <div className="space-y-6">
+      {missing.length > 0 && (
+        <div className="glass rounded-2xl border border-red-400/30 p-4 text-sm text-red-200">
+          <p className="font-semibold">حقول إلزامية ناقصة:</p>
+          <ul className="mt-2 list-disc pl-5">
+            {missing.map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+        </div>
+      )}
       <div className="flex flex-wrap gap-2">
         {tabs.map((item) => (
           <Chip key={item.id} label={item.label} active={tab === item.id} onClick={() => setTab(item.id)} />
@@ -148,9 +213,9 @@ export default function AppForm({
 
       {tab === 'basic' && (
         <div className="grid gap-4 md:grid-cols-2">
-          <Input placeholder="Title (Arabic)" value={form.title} onChange={(e) => updateField('title', e.target.value)} />
+          <Input placeholder="Title (Arabic) *" value={form.title} onChange={(e) => updateField('title', e.target.value)} />
           <Input placeholder="Title (EN)" value={form.titleEn ?? ''} onChange={(e) => updateField('titleEn', e.target.value)} />
-          <Input placeholder="Slug" value={form.slug} onChange={(e) => updateField('slug', e.target.value)} />
+          <Input placeholder="Slug *" value={form.slug} onChange={(e) => updateField('slug', e.target.value)} />
           <Select value={form.category} onChange={(e) => updateField('category', e.target.value)}>
             {['Flutter', 'Backend', 'Admin', 'Tools', 'DevOps'].map((cat) => (
               <option key={cat} value={cat}>
@@ -184,8 +249,8 @@ export default function AppForm({
               )
             }
           />
-          <Textarea className="md:col-span-2" rows={3} placeholder="Short description" value={form.shortDesc} onChange={(e) => updateField('shortDesc', e.target.value)} />
-          <Textarea className="md:col-span-2" rows={6} placeholder="Description (Markdown)" value={form.description} onChange={(e) => updateField('description', e.target.value)} />
+          <Textarea className="md:col-span-2" rows={3} placeholder="Short description *" value={form.shortDesc} onChange={(e) => updateField('shortDesc', e.target.value)} />
+          <Textarea className="md:col-span-2" rows={6} placeholder="Description (Markdown) *" value={form.description} onChange={(e) => updateField('description', e.target.value)} />
           <Select value={form.status} onChange={(e) => updateField('status', e.target.value)}>
             <option value="draft">Draft</option>
             <option value="published">Published</option>
@@ -205,6 +270,26 @@ export default function AppForm({
             value={form.media.cover ?? undefined}
             onChange={(media) => updateField('media', { ...form.media, cover: media })}
           />
+          <div className="grid gap-3 md:grid-cols-2">
+            <Select
+              value={form.mediaDisplay?.cover ?? 'full'}
+              onChange={(e) =>
+                updateField('mediaDisplay', { ...form.mediaDisplay, cover: e.target.value })
+              }
+            >
+              <option value="full">Cover: Full</option>
+              <option value="phone">Cover: Phone</option>
+            </Select>
+            <Select
+              value={form.mediaDisplay?.gallery ?? 'phone'}
+              onChange={(e) =>
+                updateField('mediaDisplay', { ...form.mediaDisplay, gallery: e.target.value })
+              }
+            >
+              <option value="phone">Gallery: Phone</option>
+              <option value="full">Gallery: Full</option>
+            </Select>
+          </div>
           <GalleryUploader
             label="Gallery"
             values={form.media.gallery ?? []}
@@ -223,7 +308,7 @@ export default function AppForm({
           {form.demo.type === 'flutter_web' && (
             <div className="space-y-3">
               <Input
-                placeholder="Embed URL"
+                placeholder="Embed URL *"
                 value={form.demo.embedUrl ?? ''}
                 onChange={(e) => updateDemo('embedUrl', e.target.value)}
               />
@@ -236,7 +321,7 @@ export default function AppForm({
           )}
           {(form.demo.type === 'video' || form.demo.type === 'interactive_video') && (
             <MediaUploader
-              label="Demo Video"
+              label="Demo Video *"
               value={form.demo.video ?? undefined}
               onChange={(media) => updateDemo('video', media)}
             />
@@ -366,11 +451,11 @@ export default function AppForm({
 
       {tab === 'case' && (
         <div className="space-y-4">
-          <Textarea rows={3} placeholder="Problem" value={form.caseStudy.problem} onChange={(e) => updateCaseStudy('problem', e.target.value)} />
-          <Textarea rows={3} placeholder="Solution" value={form.caseStudy.solution} onChange={(e) => updateCaseStudy('solution', e.target.value)} />
-          <Textarea rows={3} placeholder="Architecture" value={form.caseStudy.architecture} onChange={(e) => updateCaseStudy('architecture', e.target.value)} />
-          <Textarea rows={3} placeholder="Challenges" value={form.caseStudy.challenges} onChange={(e) => updateCaseStudy('challenges', e.target.value)} />
-          <Textarea rows={3} placeholder="Results" value={form.caseStudy.results} onChange={(e) => updateCaseStudy('results', e.target.value)} />
+          <Textarea rows={3} placeholder="Problem *" value={form.caseStudy.problem} onChange={(e) => updateCaseStudy('problem', e.target.value)} />
+          <Textarea rows={3} placeholder="Solution *" value={form.caseStudy.solution} onChange={(e) => updateCaseStudy('solution', e.target.value)} />
+          <Textarea rows={3} placeholder="Architecture *" value={form.caseStudy.architecture} onChange={(e) => updateCaseStudy('architecture', e.target.value)} />
+          <Textarea rows={3} placeholder="Challenges *" value={form.caseStudy.challenges} onChange={(e) => updateCaseStudy('challenges', e.target.value)} />
+          <Textarea rows={3} placeholder="Results *" value={form.caseStudy.results} onChange={(e) => updateCaseStudy('results', e.target.value)} />
         </div>
       )}
 
@@ -469,6 +554,18 @@ export default function AppForm({
         </Button>
       </div>
       {error && <p className="text-sm text-red-300">{error}</p>}
+      {Object.keys(serverDetails).length > 0 && (
+        <div className="glass rounded-2xl border border-red-400/30 p-4 text-xs text-red-200">
+          <p className="font-semibold mb-2">تفاصيل الأخطاء من السيرفر:</p>
+          <ul className="list-disc pl-5 space-y-1">
+            {Object.entries(serverDetails).map(([field, messages]) => (
+              <li key={field}>
+                {field}: {messages.join(', ')}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
     </div>
   );
 }

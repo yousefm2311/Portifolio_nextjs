@@ -1,6 +1,7 @@
 import OSS from 'ali-oss';
 
 const OSS_REGION = process.env.OSS_REGION;
+const OSS_ENDPOINT = process.env.OSS_ENDPOINT;
 const OSS_BUCKET = process.env.OSS_BUCKET;
 const OSS_ACCESS_KEY_ID = process.env.OSS_ACCESS_KEY_ID;
 const OSS_ACCESS_KEY_SECRET = process.env.OSS_ACCESS_KEY_SECRET;
@@ -13,11 +14,14 @@ export function getOssClient() {
     return null;
   }
   if (!client) {
+    const normalizedRegion = OSS_REGION.startsWith('oss-') ? OSS_REGION : `oss-${OSS_REGION}`;
     client = new OSS({
-      region: OSS_REGION,
+      region: normalizedRegion,
       bucket: OSS_BUCKET,
       accessKeyId: OSS_ACCESS_KEY_ID,
-      accessKeySecret: OSS_ACCESS_KEY_SECRET
+      accessKeySecret: OSS_ACCESS_KEY_SECRET,
+      endpoint: OSS_ENDPOINT,
+      timeout: 180000
     });
   }
   return client;
@@ -32,14 +36,22 @@ export async function uploadToOSS(params: {
   body: Buffer;
   contentType: string;
   cacheControl?: string;
+  contentDisposition?: string;
+  filename?: string;
 }) {
   const client = getOssClient();
   if (!client) throw new Error('OSS is not configured');
 
+  const disposition =
+    params.contentDisposition ??
+    (params.filename ? `inline; filename="${params.filename}"` : 'inline');
+
   await client.put(params.key, params.body, {
+    mime: params.contentType,
     headers: {
       'Content-Type': params.contentType,
-      'Cache-Control': params.cacheControl ?? 'public, max-age=31536000, immutable'
+      'Cache-Control': params.cacheControl ?? 'public, max-age=31536000, immutable',
+      'Content-Disposition': disposition
     }
   });
 

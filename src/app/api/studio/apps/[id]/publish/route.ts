@@ -7,7 +7,7 @@ import { enforceAdmin, enforceRateLimit } from '@/lib/api-helpers';
 
 export const runtime = 'nodejs';
 
-export async function POST(req: Request, { params }: { params: { id: string } }) {
+export async function POST(req: Request, { params }: { params: Promise<{ id: string }> }) {
   const limited = enforceRateLimit(req, 'studio');
   if (limited) return limited;
 
@@ -27,7 +27,8 @@ export async function POST(req: Request, { params }: { params: { id: string } })
       ? { status: 'published', publishedAt: new Date() }
       : { status: 'draft', publishedAt: null };
 
-  const updated = await App.findByIdAndUpdate(params.id, update, { new: true });
+  const resolved = await params;
+  const updated = await App.findByIdAndUpdate(resolved.id, update, { new: true });
   if (!updated) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }

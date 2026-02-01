@@ -78,6 +78,10 @@ const AppSchema = new Schema(
       coverId: { type: Schema.Types.ObjectId, ref: 'Media' },
       galleryIds: [{ type: Schema.Types.ObjectId, ref: 'Media' }]
     },
+    mediaDisplay: {
+      cover: { type: String, enum: ['phone', 'full'], default: 'full' },
+      gallery: { type: String, enum: ['phone', 'full'], default: 'phone' }
+    },
     caseStudy: {
       problem: { type: String, required: true },
       solution: { type: String, required: true },

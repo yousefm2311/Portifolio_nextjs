@@ -44,7 +44,7 @@ export default function AppDetailView({ app }: { app: AppDTO }) {
       <section className="grid gap-6 lg:grid-cols-2">
         <div className="glass rounded-2xl p-6">
           <h2 className="text-xl font-semibold mb-4">{labels.screenshots}</h2>
-          <Gallery items={app.media.gallery ?? []} />
+          <Gallery items={app.media.gallery ?? []} mode={app.mediaDisplay?.gallery ?? 'phone'} />
         </div>
         <div className="glass rounded-2xl p-6">
           <h2 className="text-xl font-semibold mb-4">{labels.caseStudy}</h2>

@@ -64,6 +64,13 @@ export const appInputSchema = z.object({
     })
     .optional()
     .default({}),
+  mediaDisplay: z
+    .object({
+      cover: z.enum(['phone', 'full']).optional(),
+      gallery: z.enum(['phone', 'full']).optional()
+    })
+    .optional()
+    .default({}),
   caseStudy: z.object({
     problem: z.string().min(5),
     solution: z.string().min(5),

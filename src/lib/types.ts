@@ -52,6 +52,10 @@ export type AppDTO = {
     cover?: MediaDTO;
     gallery?: MediaDTO[];
   };
+  mediaDisplay?: {
+    cover?: 'phone' | 'full';
+    gallery?: 'phone' | 'full';
+  };
   caseStudy: {
     problem: string;
     solution: string;

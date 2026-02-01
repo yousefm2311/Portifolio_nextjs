@@ -83,7 +83,9 @@ export default function AppModal({
           </div>
         )}
 
-        {tab === 'screens' && <Gallery items={app.media.gallery ?? []} />}
+        {tab === 'screens' && (
+          <Gallery items={app.media.gallery ?? []} mode={app.mediaDisplay?.gallery ?? 'phone'} />
+        )}
 
         {tab === 'case' && (
           <div className="space-y-4">

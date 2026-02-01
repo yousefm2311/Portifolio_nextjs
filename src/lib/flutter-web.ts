@@ -139,7 +139,9 @@ export async function uploadFlutterWebZip(file: File, slug: string) {
         key: `${prefix}/${name}`,
         body: data,
         contentType,
-        cacheControl
+        cacheControl,
+        contentDisposition: 'inline',
+        filename: name
       });
     } else {
       await uploadToR2({
