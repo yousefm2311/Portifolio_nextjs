@@ -3,6 +3,7 @@ import path from 'node:path';
 import crypto from 'node:crypto';
 import AdmZip from 'adm-zip';
 import { getR2PublicUrl, uploadToR2, getR2Client } from '@/lib/r2';
+import { getOssClient, getOssPublicBaseUrl, uploadToOSS } from '@/lib/oss';
 
 const PUBLIC_DIR = path.join(process.cwd(), 'public');
 const FLUTTER_DIR = path.join(PUBLIC_DIR, 'flutter');
@@ -52,7 +53,8 @@ function normalizeEntries(entries: AdmZip.IZipEntry[]) {
 
 function withBaseHref(html: string, baseHref: string) {
   if (html.includes('<base')) {
-    return html.replace(/<base\s+href="[^"]*"\s*\/>/i, `<base href="${baseHref}" />`)
+    return html
+      .replace(/<base\s+href="[^"]*"\s*\/>/i, `<base href="${baseHref}" />`)
       .replace(/<base\s+href="[^"]*"\s*>/i, `<base href="${baseHref}">`);
   }
   return html.replace(/<head>/i, `<head><base href="${baseHref}">`);
@@ -61,7 +63,7 @@ function withBaseHref(html: string, baseHref: string) {
 function buildBaseHref(publicUrl: string, prefix: string) {
   const url = new URL(publicUrl);
   const basePath = url.pathname.endsWith('/') ? url.pathname.slice(0, -1) : url.pathname;
-  const combined = `${basePath}/${prefix}`.replace(/\/+/g, '/');
+  const combined = `${basePath}/${prefix}`.replace(/\/+/, '/');
   return `${combined}/`;
 }
 
@@ -97,11 +99,16 @@ async function saveToLocal(file: File, slug: string) {
 }
 
 export async function uploadFlutterWebZip(file: File, slug: string) {
-  if (!getR2Client() || !getR2PublicUrl()) {
+  const ossClient = getOssClient();
+  const ossPublic = getOssPublicBaseUrl();
+  const r2Client = getR2Client();
+  const r2Public = getR2PublicUrl();
+
+  if (!ossClient && !r2Client) {
     return saveToLocal(file, slug);
   }
 
-  const publicUrl = getR2PublicUrl() as string;
+  const publicUrl = (ossPublic ?? r2Public) as string;
   const safeSlug = slug.toLowerCase().replace(/[^a-z0-9-]/g, '-');
   const stamp = Date.now();
   const random = crypto.randomBytes(4).toString('hex');
@@ -127,12 +134,21 @@ export async function uploadFlutterWebZip(file: File, slug: string) {
       cacheControl = 'no-cache';
     }
 
-    await uploadToR2({
-      key: `${prefix}/${name}`,
-      body: data,
-      contentType,
-      cacheControl
-    });
+    if (ossClient && ossPublic) {
+      await uploadToOSS({
+        key: `${prefix}/${name}`,
+        body: data,
+        contentType,
+        cacheControl
+      });
+    } else {
+      await uploadToR2({
+        key: `${prefix}/${name}`,
+        body: data,
+        contentType,
+        cacheControl
+      });
+    }
   }
 
   const embedUrl = `${publicUrl.replace(/\/$/, '')}/${prefix}/index.html`;

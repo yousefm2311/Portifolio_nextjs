@@ -1,7 +1,7 @@
 export type MediaDTO = {
   _id: string;
   type: 'image' | 'video' | 'file';
-  provider: 'cloudinary' | 's3' | 'r2';
+  provider: 'cloudinary' | 's3' | 'r2' | 'oss';
   providerId?: string;
   url: string;
   thumbnailUrl?: string;

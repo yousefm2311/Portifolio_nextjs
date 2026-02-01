@@ -1,7 +1,7 @@
 import { Schema, models, model } from 'mongoose';
 
 export type MediaType = 'image' | 'video' | 'file';
-export type MediaProvider = 'cloudinary' | 's3' | 'r2';
+export type MediaProvider = 'cloudinary' | 's3' | 'r2' | 'oss';
 
 export interface MediaDoc {
   _id: string;
@@ -22,7 +22,7 @@ export interface MediaDoc {
 const MediaSchema = new Schema<MediaDoc>(
   {
     type: { type: String, enum: ['image', 'video', 'file'], required: true },
-    provider: { type: String, enum: ['cloudinary', 's3', 'r2'], required: true },
+    provider: { type: String, enum: ['cloudinary', 's3', 'r2', 'oss'], required: true },
     providerId: { type: String },
     url: { type: String, required: true },
     thumbnailUrl: { type: String },

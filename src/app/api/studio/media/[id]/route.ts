@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server';
 import { connectToDatabase } from '@/lib/db';
 import { Media } from '@/models/Media';
 import { cloudinary } from '@/lib/cloudinary';
-import { AuditLog } from '@/models/AuditLog';
 import { enforceAdmin, enforceRateLimit } from '@/lib/api-helpers';
+import { AuditLog } from '@/models/AuditLog';
+import { deleteFromOSS, getOssClient } from '@/lib/oss';
 
 export const runtime = 'nodejs';
 
@@ -22,6 +23,10 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
 
   if (media.provider === 'cloudinary' && media.providerId) {
     await cloudinary.uploader.destroy(media.providerId, { resource_type: 'auto' });
+  }
+
+  if (media.provider === 'oss' && media.providerId && getOssClient()) {
+    await deleteFromOSS(media.providerId);
   }
 
   await media.deleteOne();

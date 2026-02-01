@@ -28,7 +28,9 @@
     "lucide-react": "^0.474.0",
     "lru-cache": "^11.0.0",
     "adm-zip": "^0.5.12",
-    "@aws-sdk/client-s3": "^3.758.0"
+    "@aws-sdk/client-s3": "^3.758.0",
+    "ali-oss": "^6.20.0"
+    ,"proxy-agent": "^6.4.0"
   },
   "devDependencies": {
     "typescript": "^5.6.0",

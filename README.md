@@ -86,6 +86,17 @@ You can upload a Flutter web build as a **ZIP** from `/studio`:
 
 **Note:** On Vercel, the filesystem is read‑only at runtime, so local extraction is not supported.
 
+## Alibaba Cloud OSS
+If you use Alibaba OSS, set:
+```
+OSS_REGION
+OSS_BUCKET
+OSS_ACCESS_KEY_ID
+OSS_ACCESS_KEY_SECRET
+OSS_PUBLIC_BASE_URL
+```
+Uploads (media + Flutter Web ZIP) will go to OSS automatically when these vars exist.
+
 ## Production Checklist
 - ✅ Use strong `NEXTAUTH_SECRET`
 - ✅ Lock down `ADMIN_EMAILS`
