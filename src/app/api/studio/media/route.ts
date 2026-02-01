@@ -5,10 +5,11 @@ import { cloudinary } from '@/lib/cloudinary';
 import { enforceAdmin, enforceRateLimit } from '@/lib/api-helpers';
 import { AuditLog } from '@/models/AuditLog';
 import { getOssClient, getOssPublicBaseUrl, uploadToOSS } from '@/lib/oss';
+import { ensureMp4H264 } from '@/lib/video-transcode';
 
 export const runtime = 'nodejs';
 
-const MAX_SIZE_MB = 40;
+const MAX_SIZE_MB = 500;
 const allowedTypes = ['image/', 'video/', 'application/pdf'];
 
 export async function GET(req: Request) {
@@ -46,27 +47,43 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Invalid file type' }, { status: 400 });
   }
 
-  const buffer = Buffer.from(await file.arrayBuffer());
+  let buffer = Buffer.from(await file.arrayBuffer());
+  let contentType = file.type;
+  let filename = file.name;
+
+  if (file.type.startsWith('video/')) {
+    try {
+      const converted = await ensureMp4H264(buffer, file.name);
+      buffer = converted.buffer;
+      contentType = converted.contentType;
+      filename = converted.filename;
+    } catch (error: any) {
+      return NextResponse.json(
+        { error: error?.message ?? 'Failed to convert video' },
+        { status: 400 }
+      );
+    }
+  }
 
   let mediaPayload: any = null;
 
   if (getOssClient() && getOssPublicBaseUrl()) {
-    const ext = file.name.split('.').pop()?.toLowerCase() ?? 'bin';
+    const ext = filename.split('.').pop()?.toLowerCase() ?? 'bin';
     const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
     const key = `media/${fileName}`;
     const url = await uploadToOSS({
       key,
       body: buffer,
-      contentType: file.type,
-      cacheControl: file.type === 'application/pdf' ? 'public, max-age=3600' : undefined,
-      contentDisposition: file.type === 'application/pdf' ? 'inline' : 'inline',
-      filename: file.name
+      contentType,
+      cacheControl: contentType === 'application/pdf' ? 'public, max-age=3600' : undefined,
+      contentDisposition: contentType === 'application/pdf' ? 'inline' : 'inline',
+      filename
     });
 
     mediaPayload = {
-      type: file.type.startsWith('image')
+      type: contentType.startsWith('image')
         ? 'image'
-        : file.type.startsWith('video')
+        : contentType.startsWith('video')
           ? 'video'
           : 'file',
       provider: 'oss',
@@ -77,15 +94,15 @@ export async function POST(req: Request) {
       alt
     };
   } else {
-    const result = await cloudinary.uploader.upload(`data:${file.type};base64,${buffer.toString('base64')}` , {
+    const result = await cloudinary.uploader.upload(`data:${contentType};base64,${buffer.toString('base64')}` , {
       folder: 'portfolio-showcase',
       resource_type: 'auto'
     });
 
     mediaPayload = {
-      type: file.type.startsWith('image')
+      type: contentType.startsWith('image')
         ? 'image'
-        : file.type.startsWith('video')
+        : contentType.startsWith('video')
           ? 'video'
           : 'file',
       provider: 'cloudinary',

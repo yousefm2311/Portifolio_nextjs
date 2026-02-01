@@ -16,7 +16,12 @@ const nextConfig = {
         hostname: 'images.unsplash.com'
       }
     ]
-  }
+  },
+  serverExternalPackages: [
+    'fluent-ffmpeg',
+    '@ffmpeg-installer/ffmpeg',
+    '@ffprobe-installer/ffprobe'
+  ]
 };
 
 export default nextConfig;

@@ -1,5 +1,13 @@
 import { z } from 'zod';
 
+const emptyToUndefined = (value: unknown) => {
+  if (value === null || value === undefined) return undefined;
+  if (typeof value === 'string' && value.trim() === '') return undefined;
+  return value;
+};
+
+const optionalUrl = z.preprocess(emptyToUndefined, z.string().url().optional());
+
 export const slugRegex = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
 
 export const roleVariantSchema = z.object({
@@ -41,20 +49,36 @@ export const appInputSchema = z.object({
   kpis: z.array(kpiSchema).optional().default([]),
   links: z
     .object({
-      liveDemoUrl: z.string().url().optional().nullable(),
-      githubUrl: z.string().url().optional().nullable(),
-      apkUrl: z.string().url().optional().nullable(),
-      iosUrl: z.string().url().optional().nullable(),
-      playStoreUrl: z.string().url().optional().nullable(),
-      appStoreUrl: z.string().url().optional().nullable()
+      liveDemoUrl: optionalUrl,
+      githubUrl: optionalUrl,
+      apkUrl: optionalUrl,
+      iosUrl: optionalUrl,
+      playStoreUrl: optionalUrl,
+      appStoreUrl: optionalUrl
     })
     .optional()
     .default({}),
   demo: z.object({
     type: z.enum(['video', 'flutter_web', 'interactive_video']),
-    embedUrl: z.string().url().optional().nullable(),
+    embedUrl: optionalUrl,
     videoId: z.string().optional().nullable(),
     interactiveHotspots: z.array(hotspotSchema).optional().default([])
+  })
+  .superRefine((demo, ctx) => {
+    if (demo.type === 'flutter_web' && !demo.embedUrl) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['embedUrl'],
+        message: 'Embed URL is required for Flutter Web'
+      });
+    }
+    if ((demo.type === 'video' || demo.type === 'interactive_video') && !demo.videoId) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['videoId'],
+        message: 'Video is required for demo'
+      });
+    }
   }),
   media: z
     .object({

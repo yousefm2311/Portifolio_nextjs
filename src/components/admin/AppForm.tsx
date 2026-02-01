@@ -139,6 +139,11 @@ export default function AppForm({
     }
     setMissing([]);
     const resolvedVideoId = form.demo.video?._id ?? (form.demo.videoId || undefined);
+    const normalizeUrl = (value?: string | null) => {
+      if (!value) return undefined;
+      const trimmed = value.trim();
+      return trimmed.length > 0 ? trimmed : undefined;
+    };
 
     const payload = {
       title: form.title,
@@ -152,10 +157,17 @@ export default function AppForm({
       techStack: form.techStack,
       features: form.features,
       kpis: form.kpis,
-      links: form.links,
+      links: {
+        liveDemoUrl: normalizeUrl(form.links.liveDemoUrl),
+        githubUrl: normalizeUrl(form.links.githubUrl),
+        apkUrl: normalizeUrl(form.links.apkUrl),
+        iosUrl: normalizeUrl(form.links.iosUrl),
+        playStoreUrl: normalizeUrl(form.links.playStoreUrl),
+        appStoreUrl: normalizeUrl(form.links.appStoreUrl)
+      },
       demo: {
         type: form.demo.type,
-        embedUrl: form.demo.embedUrl,
+        embedUrl: normalizeUrl(form.demo.embedUrl),
         videoId: resolvedVideoId,
         interactiveHotspots: form.demo.interactiveHotspots ?? []
       },

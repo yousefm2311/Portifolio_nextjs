@@ -9,7 +9,7 @@ const schema = z.object({
   slug: z.string().min(2)
 });
 
-const MAX_SIZE_MB = 80;
+const MAX_SIZE_MB = 500;
 
 export async function POST(req: Request) {
   const limited = enforceRateLimit(req, 'studio');
