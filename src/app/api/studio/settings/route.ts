@@ -32,13 +32,103 @@ const localizedTimelineSchema = z.object({
   en: z.array(timelineItemSchema)
 });
 
+const sectionIntroSchema = z.object({
+  ar: z.object({
+    eyebrow: z.string(),
+    title: z.string(),
+    subtitle: z.string()
+  }),
+  en: z.object({
+    eyebrow: z.string(),
+    title: z.string(),
+    subtitle: z.string()
+  })
+});
+
+const notesSchema = z.object({
+  ar: z.object({
+    noteA: z.string(),
+    noteB: z.string()
+  }),
+  en: z.object({
+    noteA: z.string(),
+    noteB: z.string()
+  })
+});
+
+const cardItemSchema = z.object({
+  title: z.string(),
+  desc: z.string(),
+  icon: z.string().optional().nullable(),
+  mediaId: z.string().optional().nullable()
+});
+
+const cardListSchema = z.object({
+  ar: z.array(cardItemSchema),
+  en: z.array(cardItemSchema)
+});
+
+const ctaSchema = z.object({
+  ar: z.object({
+    eyebrow: z.string(),
+    title: z.string(),
+    subtitle: z.string(),
+    primaryLabel: z.string(),
+    secondaryLabel: z.string()
+  }),
+  en: z.object({
+    eyebrow: z.string(),
+    title: z.string(),
+    subtitle: z.string(),
+    primaryLabel: z.string(),
+    secondaryLabel: z.string()
+  })
+});
+
+const resourceItemSchema = z.object({
+  title: z.string(),
+  desc: z.string(),
+  url: z.string().url(),
+  type: z.enum(['guide', 'link', 'tool', 'file', 'video']),
+  badge: z.string().optional().nullable()
+});
+
+const resourcesSchema = z.object({
+  ar: z.array(resourceItemSchema),
+  en: z.array(resourceItemSchema)
+});
+
+const servicePlanSchema = z.object({
+  name: z.string(),
+  price: z.string(),
+  description: z.string(),
+  features: z.array(z.string()),
+  highlight: z.boolean().optional().nullable()
+});
+
+const servicesSchema = z.object({
+  ar: z.array(servicePlanSchema),
+  en: z.array(servicePlanSchema)
+});
+
 const schema = z.object({
   cvMediaId: z.string().optional().nullable(),
   cvUrl: z.string().url().optional().nullable(),
   heroBadges: localizedListSchema.optional().nullable(),
   impactItems: localizedImpactSchema.optional().nullable(),
   techMarquee: localizedListSchema.optional().nullable(),
-  timeline: localizedTimelineSchema.optional().nullable()
+  timeline: localizedTimelineSchema.optional().nullable(),
+  capabilitiesIntro: sectionIntroSchema.optional().nullable(),
+  capabilitiesNotes: notesSchema.optional().nullable(),
+  capabilitiesItems: cardListSchema.optional().nullable(),
+  processIntro: sectionIntroSchema.optional().nullable(),
+  processSteps: cardListSchema.optional().nullable(),
+  cta: ctaSchema.optional().nullable(),
+  enableResources: z.boolean().optional(),
+  enableServices: z.boolean().optional(),
+  enableCaseStudy: z.boolean().optional(),
+  resources: resourcesSchema.optional().nullable(),
+  services: servicesSchema.optional().nullable()
 });
 
 export async function GET(req: Request) {

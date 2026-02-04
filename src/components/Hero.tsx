@@ -66,7 +66,7 @@ export default function Hero({
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2">
-          <div className="glass-soft border-0 relative overflow-hidden rounded-2xl p-4 transition hover:-translate-y-1 float-slow">
+          <div className="glass-soft glass-borderless relative overflow-hidden rounded-2xl p-4 transition hover:-translate-y-1 float-slow">
             <div className="absolute right-0 top-0 h-24 w-24 rounded-full bg-accent-400/20 blur-2xl" />
             <p className="text-xs uppercase tracking-widest text-white/60">
               {locale === 'ar' ? 'التخصص' : 'Focus'}
@@ -78,7 +78,7 @@ export default function Hero({
                 : 'High-impact mobile & web builds.'}
             </p>
           </div>
-          <div className="glass-soft border-0 relative overflow-hidden rounded-2xl p-4 transition hover:-translate-y-1 float-slower">
+          <div className="glass-soft glass-borderless relative overflow-hidden rounded-2xl p-4 transition hover:-translate-y-1 float-slower">
             <div className="absolute right-0 top-0 h-24 w-24 rounded-full bg-accent-500/20 blur-2xl" />
             <p className="text-xs uppercase tracking-widest text-white/60">
               {locale === 'ar' ? 'الستايل' : 'Style'}
@@ -92,7 +92,7 @@ export default function Hero({
                 : 'Animated, immersive, and clean.'}
             </p>
           </div>
-          <div className="glass-soft border-0 relative overflow-hidden rounded-2xl p-4 transition hover:-translate-y-1 sm:col-span-2 glow-ring">
+          <div className="glass-soft glass-borderless relative overflow-hidden rounded-2xl p-4 transition hover:-translate-y-1 sm:col-span-2 glow-ring">
             <div className="absolute -right-6 -top-6 h-32 w-32 rounded-full bg-accent-300/20 blur-2xl" />
             <div className="flex items-center justify-between">
               <p className="text-xs uppercase tracking-widest text-white/60">

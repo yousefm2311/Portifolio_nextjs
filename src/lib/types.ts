@@ -74,6 +74,40 @@ export type LocalizedList = {
   en: string[];
 };
 
+export type SectionIntro = {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+};
+
+export type LocalizedSectionIntro = {
+  ar: SectionIntro;
+  en: SectionIntro;
+};
+
+export type SectionNotes = {
+  noteA: string;
+  noteB: string;
+};
+
+export type LocalizedNotes = {
+  ar: SectionNotes;
+  en: SectionNotes;
+};
+
+export type CardItem = {
+  title: string;
+  desc: string;
+  icon?: string;
+  mediaId?: string | null;
+  media?: MediaDTO;
+};
+
+export type LocalizedCardList = {
+  ar: CardItem[];
+  en: CardItem[];
+};
+
 export type ImpactItem = {
   value: string;
   label: string;
@@ -95,6 +129,45 @@ export type LocalizedTimeline = {
   en: TimelineItem[];
 };
 
+export type ResourceItem = {
+  title: string;
+  desc: string;
+  url: string;
+  type: 'guide' | 'link' | 'tool' | 'file' | 'video';
+  badge?: string;
+};
+
+export type LocalizedResources = {
+  ar: ResourceItem[];
+  en: ResourceItem[];
+};
+
+export type ServicePlan = {
+  name: string;
+  price: string;
+  description: string;
+  features: string[];
+  highlight?: boolean;
+};
+
+export type LocalizedServices = {
+  ar: ServicePlan[];
+  en: ServicePlan[];
+};
+
+export type CtaCopy = {
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+  primaryLabel: string;
+  secondaryLabel: string;
+};
+
+export type LocalizedCta = {
+  ar: CtaCopy;
+  en: CtaCopy;
+};
+
 export type SettingsDTO = {
   _id: string;
   cvMedia?: MediaDTO;
@@ -103,4 +176,15 @@ export type SettingsDTO = {
   impactItems?: LocalizedImpact | null;
   techMarquee?: LocalizedList | null;
   timeline?: LocalizedTimeline | null;
+  capabilitiesIntro?: LocalizedSectionIntro | null;
+  capabilitiesNotes?: LocalizedNotes | null;
+  capabilitiesItems?: LocalizedCardList | null;
+  processIntro?: LocalizedSectionIntro | null;
+  processSteps?: LocalizedCardList | null;
+  cta?: LocalizedCta | null;
+  enableResources?: boolean;
+  enableServices?: boolean;
+  enableCaseStudy?: boolean;
+  resources?: LocalizedResources | null;
+  services?: LocalizedServices | null;
 };

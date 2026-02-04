@@ -4,6 +4,11 @@ import FeaturedApps from '@/components/FeaturedApps';
 import TimelineSection from '@/components/TimelineSection';
 import ImpactStrip from '@/components/ImpactStrip';
 import TechMarquee from '@/components/TechMarquee';
+import CapabilitiesSection from '@/components/CapabilitiesSection';
+import ProcessSection from '@/components/ProcessSection';
+import CallToAction from '@/components/CallToAction';
+import ResourcesSection from '@/components/ResourcesSection';
+import ServicesSection from '@/components/ServicesSection';
 import { getPublishedApps } from '@/lib/app-service';
 import { getSettings } from '@/lib/settings-service';
 
@@ -23,12 +28,28 @@ export default async function HomePage() {
           <TechMarquee items={settings?.techMarquee ?? null} />
         </section>
         <FeaturedApps apps={items} />
+        <CapabilitiesSection
+          intro={settings?.capabilitiesIntro ?? null}
+          notes={settings?.capabilitiesNotes ?? null}
+          items={settings?.capabilitiesItems ?? null}
+        />
 
         <section id="launcher" className="py-20">
-          <Launcher apps={items} />
+          <Launcher apps={items} showCaseStudy={Boolean(settings?.enableCaseStudy)} />
         </section>
 
+        <ProcessSection
+          intro={settings?.processIntro ?? null}
+          steps={settings?.processSteps ?? null}
+        />
+        {settings?.enableResources && (
+          <ResourcesSection resources={settings?.resources ?? null} />
+        )}
+        {settings?.enableServices && (
+          <ServicesSection services={settings?.services ?? null} />
+        )}
         <TimelineSection items={settings?.timeline ?? null} />
+        <CallToAction cta={settings?.cta ?? null} />
       </main>
     </div>
   );

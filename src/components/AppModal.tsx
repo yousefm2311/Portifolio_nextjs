@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import Link from 'next/link';
 import { AppDTO } from '@/lib/types';
 import Modal from '@/components/ui/Modal';
 import Button from '@/components/ui/Button';
@@ -11,22 +12,27 @@ import { useLocale } from '@/components/LocaleProvider';
 import Chip from '@/components/ui/Chip';
 import { ExternalLink, Github, Download } from 'lucide-react';
 
-const tabs = [
-  { id: 'demo', labelKey: 'liveDemo' },
-  { id: 'screens', labelKey: 'screenshots' },
-  { id: 'case', labelKey: 'caseStudy' }
-] as const;
-
 export default function AppModal({
   app,
   open,
-  onClose
+  onClose,
+  showCaseStudy
 }: {
   app: AppDTO | null;
   open: boolean;
   onClose: () => void;
+  showCaseStudy?: boolean;
 }) {
   const { t, locale } = useLocale();
+  const tabs = useMemo(
+    () =>
+      ([
+        { id: 'demo', labelKey: 'liveDemo' },
+        { id: 'screens', labelKey: 'screenshots' },
+        ...(showCaseStudy ? [{ id: 'case', labelKey: 'caseStudy' }] : [])
+      ] as const),
+    [showCaseStudy]
+  );
   const [tab, setTab] = useState<(typeof tabs)[number]['id']>('demo');
   const [role, setRole] = useState<string | null>(null);
 
@@ -87,7 +93,7 @@ export default function AppModal({
           <Gallery items={app.media.gallery ?? []} mode={app.mediaDisplay?.gallery ?? 'phone'} />
         )}
 
-        {tab === 'case' && (
+        {showCaseStudy && tab === 'case' && (
           <div className="space-y-4">
             <div>
               <h4 className="mb-2 text-sm font-semibold">Problem</h4>
@@ -156,6 +162,11 @@ export default function AppModal({
         )}
 
         <div className="flex flex-wrap gap-3">
+          {showCaseStudy && (
+            <Link href={`/app/${app.slug}/case-study`} onClick={onClose}>
+              <Button variant="secondary">{t('caseStudy')}</Button>
+            </Link>
+          )}
           {app.links?.liveDemoUrl && (
             <a href={app.links.liveDemoUrl} target="_blank" rel="noreferrer">
               <Button>

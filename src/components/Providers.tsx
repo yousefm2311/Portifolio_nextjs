@@ -15,10 +15,15 @@ import { SessionProvider } from 'next-auth/react';
 export default function Providers({
   initialLocale,
   initialTheme,
+  features,
   children
 }: {
   initialLocale: Locale;
   initialTheme: Theme;
+  features?: {
+    resources?: boolean;
+    services?: boolean;
+  };
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
@@ -28,9 +33,9 @@ export default function Providers({
     <SessionProvider>
       <ThemeProvider initialTheme={initialTheme}>
         <LocaleProvider initialLocale={initialLocale}>
-          {!hideShell && <SiteHeader />}
+          {!hideShell && <SiteHeader features={features} />}
           <PageTransition>{children}</PageTransition>
-          {!hideShell && <SiteFooter />}
+          {!hideShell && <SiteFooter features={features} />}
           <CommandPalette />
           <ControlCenter />
         </LocaleProvider>

@@ -100,6 +100,9 @@ export default function AdminAppsTable({ initialApps }: { initialApps: AppDTO[] 
                   <Link href={`/studio/apps/${app._id}/edit`}>
                     <Button variant="secondary">Edit</Button>
                   </Link>
+                  <Link href={`/studio/apps/${app._id}/edit?tab=case`}>
+                    <Button variant="ghost">Case Study</Button>
+                  </Link>
                   {app.status === 'published' ? (
                     <Button variant="ghost" onClick={() => updateStatus(app._id, 'unpublish')} disabled={busyId === app._id}>
                       {busyId === app._id ? 'Saving...' : 'Unpublish'}

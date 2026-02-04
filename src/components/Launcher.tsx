@@ -9,7 +9,13 @@ import { useLocale } from '@/components/LocaleProvider';
 
 const AppModal = dynamic(() => import('@/components/AppModal'), { ssr: false });
 
-export default function Launcher({ apps }: { apps: AppDTO[] }) {
+export default function Launcher({
+  apps,
+  showCaseStudy
+}: {
+  apps: AppDTO[];
+  showCaseStudy?: boolean;
+}) {
   const { t, locale } = useLocale();
   const [selected, setSelected] = useState<AppDTO | null>(null);
 
@@ -46,7 +52,12 @@ export default function Launcher({ apps }: { apps: AppDTO[] }) {
         </div>
       </DeviceFrame>
 
-      <AppModal app={selected} open={Boolean(selected)} onClose={() => setSelected(null)} />
+      <AppModal
+        app={selected}
+        open={Boolean(selected)}
+        onClose={() => setSelected(null)}
+        showCaseStudy={showCaseStudy}
+      />
     </div>
   );
 }

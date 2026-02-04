@@ -5,6 +5,7 @@ import Providers from '@/components/Providers';
 import { Locale } from '@/data/translations';
 import type { Theme } from '@/lib/theme';
 import { themes } from '@/lib/theme';
+import { getSettings } from '@/lib/settings-service';
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -29,6 +30,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const themeCookie = cookieStore.get('theme')?.value ?? 'neon';
   const theme = (themes.find((item) => item.id === themeCookie)?.id ?? 'neon') as Theme;
   const dir = locale === 'ar' ? 'rtl' : 'ltr';
+  const settings = await getSettings();
+  const features = {
+    resources: Boolean(settings?.enableResources),
+    services: Boolean(settings?.enableServices)
+  };
 
   return (
     <html
@@ -39,7 +45,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       suppressHydrationWarning
     >
       <body className="antialiased" suppressHydrationWarning>
-        <Providers initialLocale={locale} initialTheme={theme}>
+        <Providers initialLocale={locale} initialTheme={theme} features={features}>
           {children}
         </Providers>
       </body>

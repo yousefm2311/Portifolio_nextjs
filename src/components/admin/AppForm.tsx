@@ -1,13 +1,14 @@
 'use client';
 
-import { useMemo, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useMemo, useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { AppDTO, MediaDTO } from '@/lib/types';
 import { Input, Textarea, Select } from '@/components/ui/Inputs';
 import Button from '@/components/ui/Button';
 import Chip from '@/components/ui/Chip';
 import { GalleryUploader, MediaUploader } from '@/components/admin/MediaUploader';
 import FlutterWebUploader from '@/components/admin/FlutterWebUploader';
+import { useLocale } from '@/components/LocaleProvider';
 
 const tabs = [
   { id: 'basic', label: 'Basic Info' },
@@ -65,13 +66,23 @@ export default function AppForm({
   initial?: AppDTO | null;
   mode: 'create' | 'edit';
 }) {
+  const { locale } = useLocale();
   const router = useRouter();
-  const [tab, setTab] = useState<(typeof tabs)[number]['id']>('basic');
+  const searchParams = useSearchParams();
+  const tabParam = searchParams?.get('tab');
+  const resolvedTab = tabs.some((item) => item.id === tabParam) ? (tabParam as (typeof tabs)[number]['id']) : 'basic';
+  const [tab, setTab] = useState<(typeof tabs)[number]['id']>(resolvedTab);
   const [form, setForm] = useState<AppDTO>(initial ?? defaultState);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [serverDetails, setServerDetails] = useState<Record<string, string[]>>({});
   const [missing, setMissing] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (tabParam && tabs.some((item) => item.id === tabParam)) {
+      setTab(tabParam as (typeof tabs)[number]['id']);
+    }
+  }, [tabParam]);
 
   const requiredFields = [
     { key: 'title', label: 'Title (Arabic)', tab: 'basic' as const },
@@ -205,6 +216,14 @@ export default function AppForm({
     }
   };
 
+  const tabLabels: Record<(typeof tabs)[number]['id'], string> = {
+    basic: locale === 'ar' ? 'بيانات أساسية' : 'Basic Info',
+    media: locale === 'ar' ? 'الصور والوسائط' : 'Media',
+    demo: locale === 'ar' ? 'الديمو' : 'Demo',
+    case: locale === 'ar' ? 'دراسة الحالة' : 'Case Study',
+    extras: locale === 'ar' ? 'روابط + KPIs + Features' : 'Links + KPIs + Features'
+  };
+
   return (
     <div className="space-y-6">
       {missing.length > 0 && (
@@ -219,7 +238,12 @@ export default function AppForm({
       )}
       <div className="flex flex-wrap gap-2">
         {tabs.map((item) => (
-          <Chip key={item.id} label={item.label} active={tab === item.id} onClick={() => setTab(item.id)} />
+          <Chip
+            key={item.id}
+            label={tabLabels[item.id] ?? item.label}
+            active={tab === item.id}
+            onClick={() => setTab(item.id)}
+          />
         ))}
       </div>
 
@@ -465,11 +489,46 @@ export default function AppForm({
 
       {tab === 'case' && (
         <div className="glass rounded-2xl p-5 space-y-4">
-          <Textarea rows={3} placeholder="Problem *" value={form.caseStudy.problem} onChange={(e) => updateCaseStudy('problem', e.target.value)} />
-          <Textarea rows={3} placeholder="Solution *" value={form.caseStudy.solution} onChange={(e) => updateCaseStudy('solution', e.target.value)} />
-          <Textarea rows={3} placeholder="Architecture *" value={form.caseStudy.architecture} onChange={(e) => updateCaseStudy('architecture', e.target.value)} />
-          <Textarea rows={3} placeholder="Challenges *" value={form.caseStudy.challenges} onChange={(e) => updateCaseStudy('challenges', e.target.value)} />
-          <Textarea rows={3} placeholder="Results *" value={form.caseStudy.results} onChange={(e) => updateCaseStudy('results', e.target.value)} />
+          <div>
+            <h3 className="text-lg font-semibold">
+              {locale === 'ar' ? 'محتوى دراسة الحالة' : 'Case study content'}
+            </h3>
+            <p className="text-sm text-muted">
+              {locale === 'ar'
+                ? 'املأ الحقول التالية لتظهر صفحة الـ Case Study لهذا التطبيق.'
+                : 'Fill the fields below to power the Case Study page for this app.'}
+            </p>
+          </div>
+          <Textarea
+            rows={3}
+            placeholder={locale === 'ar' ? 'المشكلة *' : 'Problem *'}
+            value={form.caseStudy.problem}
+            onChange={(e) => updateCaseStudy('problem', e.target.value)}
+          />
+          <Textarea
+            rows={3}
+            placeholder={locale === 'ar' ? 'الحل *' : 'Solution *'}
+            value={form.caseStudy.solution}
+            onChange={(e) => updateCaseStudy('solution', e.target.value)}
+          />
+          <Textarea
+            rows={3}
+            placeholder={locale === 'ar' ? 'المعمارية *' : 'Architecture *'}
+            value={form.caseStudy.architecture}
+            onChange={(e) => updateCaseStudy('architecture', e.target.value)}
+          />
+          <Textarea
+            rows={3}
+            placeholder={locale === 'ar' ? 'التحديات *' : 'Challenges *'}
+            value={form.caseStudy.challenges}
+            onChange={(e) => updateCaseStudy('challenges', e.target.value)}
+          />
+          <Textarea
+            rows={3}
+            placeholder={locale === 'ar' ? 'النتائج *' : 'Results *'}
+            value={form.caseStudy.results}
+            onChange={(e) => updateCaseStudy('results', e.target.value)}
+          />
         </div>
       )}
 

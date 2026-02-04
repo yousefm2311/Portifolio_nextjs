@@ -6,12 +6,18 @@ import { motion } from 'framer-motion';
 import { useLocale } from '@/components/LocaleProvider';
 import { cn } from '@/lib/utils';
 
-export default function SiteHeader() {
+export default function SiteHeader({
+  features
+}: {
+  features?: { resources?: boolean; services?: boolean };
+}) {
   const { t } = useLocale();
   const pathname = usePathname();
 
   const links = [
     { href: '/apps', label: t('apps') },
+    ...(features?.services ? [{ href: '/services', label: t('services') }] : []),
+    ...(features?.resources ? [{ href: '/resources', label: t('resources') }] : []),
     { href: '/about', label: t('about') },
     { href: '/contact', label: t('contact') }
   ];

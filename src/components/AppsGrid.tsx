@@ -9,7 +9,13 @@ import { useLocale } from '@/components/LocaleProvider';
 
 const AppModal = dynamic(() => import('@/components/AppModal'), { ssr: false });
 
-export default function AppsGrid({ apps }: { apps: AppDTO[] }) {
+export default function AppsGrid({
+  apps,
+  showCaseStudy
+}: {
+  apps: AppDTO[];
+  showCaseStudy?: boolean;
+}) {
   const [selected, setSelected] = useState<AppDTO | null>(null);
   const { t, locale } = useLocale();
 
@@ -51,7 +57,12 @@ export default function AppsGrid({ apps }: { apps: AppDTO[] }) {
           </div>
         ))}
       </div>
-      <AppModal app={selected} open={Boolean(selected)} onClose={() => setSelected(null)} />
+      <AppModal
+        app={selected}
+        open={Boolean(selected)}
+        onClose={() => setSelected(null)}
+        showCaseStudy={showCaseStudy}
+      />
     </div>
   );
 }

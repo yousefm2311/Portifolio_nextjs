@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import AppDetailView from '@/components/AppDetailView';
+import CaseStudyView from '@/components/CaseStudyView';
 import { getAppBySlug } from '@/lib/app-service';
 import { getSettings } from '@/lib/settings-service';
 
@@ -9,29 +9,25 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const resolvedParams = await params;
   const app = await getAppBySlug(resolvedParams.slug);
   if (!app) return {};
-
   return {
-    title: `${app.title} | Yousef Portfolio`,
-    description: app.shortDesc,
-    openGraph: {
-      title: app.title,
-      description: app.shortDesc,
-      images: app.media.cover?.url ? [app.media.cover.url] : []
-    }
+    title: `${app.title} | Case Study`,
+    description: app.shortDesc
   };
 }
 
-export default async function AppDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
   const resolvedParams = await params;
   const [app, settings] = await Promise.all([
     getAppBySlug(resolvedParams.slug),
     getSettings()
   ]);
+
   if (!app) return notFound();
+  if (!settings?.enableCaseStudy) return notFound();
 
   return (
     <div className="min-h-screen">
-      <AppDetailView app={app} showCaseStudy={Boolean(settings?.enableCaseStudy)} />
+      <CaseStudyView app={app} />
     </div>
   );
 }
