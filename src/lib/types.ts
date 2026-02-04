@@ -68,3 +68,39 @@ export type AppDTO = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type LocalizedList = {
+  ar: string[];
+  en: string[];
+};
+
+export type ImpactItem = {
+  value: string;
+  label: string;
+};
+
+export type LocalizedImpact = {
+  ar: ImpactItem[];
+  en: ImpactItem[];
+};
+
+export type TimelineItem = {
+  year: string;
+  title: string;
+  desc: string;
+};
+
+export type LocalizedTimeline = {
+  ar: TimelineItem[];
+  en: TimelineItem[];
+};
+
+export type SettingsDTO = {
+  _id: string;
+  cvMedia?: MediaDTO;
+  cvUrl?: string | null;
+  heroBadges?: LocalizedList | null;
+  impactItems?: LocalizedImpact | null;
+  techMarquee?: LocalizedList | null;
+  timeline?: LocalizedTimeline | null;
+};

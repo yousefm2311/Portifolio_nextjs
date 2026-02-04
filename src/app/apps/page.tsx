@@ -1,5 +1,3 @@
-import SiteHeader from '@/components/SiteHeader';
-import SiteFooter from '@/components/SiteFooter';
 import AppsGrid from '@/components/AppsGrid';
 import AppsFilters from '@/components/AppsFilters';
 import AppsHeader from '@/components/AppsHeader';
@@ -22,13 +20,11 @@ export default async function AppsPage({
 
   return (
     <div className="min-h-screen">
-      <SiteHeader />
       <main className="mx-auto max-w-6xl px-4 py-16 space-y-10">
         <AppsHeader />
         <AppsFilters />
         <AppsGrid apps={items} />
       </main>
-      <SiteFooter />
     </div>
   );
 }

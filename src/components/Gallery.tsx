@@ -19,8 +19,8 @@ export default function Gallery({ items, mode = 'phone' }: { items: MediaDTO[]; 
   return (
     <div className="space-y-4">
       {mode === 'phone' ? (
-        <Iphone17ProMaxFrame className="max-w-[360px]">
-          <div className="relative aspect-[9/19] w-full overflow-hidden">
+        <Iphone17ProMaxFrame>
+          <div className="relative h-full w-full overflow-hidden">
             <Image
               src={current.url}
               alt={current.alt ?? 'Screenshot'}
@@ -30,13 +30,13 @@ export default function Gallery({ items, mode = 'phone' }: { items: MediaDTO[]; 
             />
           </div>
           <button
-            className="absolute left-6 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/40 p-2"
+            className="absolute left-6 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/40 p-2 text-true-white"
             onClick={() => setIndex((prev) => (prev - 1 + items.length) % items.length)}
           >
             <ChevronLeft size={18} />
           </button>
           <button
-            className="absolute right-6 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/40 p-2"
+            className="absolute right-6 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/40 p-2 text-true-white"
             onClick={() => setIndex((prev) => (prev + 1) % items.length)}
           >
             <ChevronRight size={18} />
@@ -52,13 +52,13 @@ export default function Gallery({ items, mode = 'phone' }: { items: MediaDTO[]; 
             sizes="(max-width: 768px) 100vw, 60vw"
           />
           <button
-            className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/40 p-2"
+            className="absolute left-3 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/40 p-2 text-true-white"
             onClick={() => setIndex((prev) => (prev - 1 + items.length) % items.length)}
           >
             <ChevronLeft size={18} />
           </button>
           <button
-            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/40 p-2"
+            className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full border border-white/10 bg-black/40 p-2 text-true-white"
             onClick={() => setIndex((prev) => (prev + 1) % items.length)}
           >
             <ChevronRight size={18} />

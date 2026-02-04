@@ -37,7 +37,9 @@ export function LocaleProvider({
 export function useLocale() {
   const ctx = useContext(LocaleContext);
   if (!ctx) {
-    throw new Error('useLocale must be used within LocaleProvider');
+    const fallbackLocale: Locale = 'ar';
+    const t = (key: TranslationKey) => translations[fallbackLocale][key] ?? key;
+    return { locale: fallbackLocale, setLocale: () => {}, t };
   }
   return ctx;
 }

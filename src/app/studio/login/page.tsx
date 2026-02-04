@@ -1,15 +1,22 @@
 'use client';
 
-import { useState } from 'react';
-import { signIn } from 'next-auth/react';
+import { useEffect, useState } from 'react';
+import { signIn, useSession } from 'next-auth/react';
 import Button from '@/components/ui/Button';
 import { Input } from '@/components/ui/Inputs';
 
 export default function StudioLoginPage() {
+  const { status } = useSession();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (status === 'authenticated') {
+      window.location.href = '/studio/apps';
+    }
+  }, [status]);
 
   const onSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -29,6 +36,16 @@ export default function StudioLoginPage() {
 
     window.location.href = '/studio/apps';
   };
+
+  if (status === 'loading') {
+    return (
+      <div className="min-h-screen flex items-center justify-center px-4">
+        <div className="glass w-full max-w-md rounded-3xl p-8 text-sm text-muted">
+          Checking session...
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4">

@@ -7,13 +7,24 @@ import { AppDTO } from '@/lib/types';
 
 export default function AdminAppsTable({ initialApps }: { initialApps: AppDTO[] }) {
   const [apps, setApps] = useState(initialApps);
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const updateStatus = async (id: string, action: 'publish' | 'unpublish') => {
-    await fetch(`/api/studio/apps/${id}/publish`, {
+    setBusyId(id);
+    setError(null);
+    const res = await fetch(`/api/studio/apps/${id}/publish`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ action })
+      body: JSON.stringify({ action }),
+      credentials: 'include'
     });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setError(data?.error ?? 'Failed to update status.');
+      setBusyId(null);
+      return;
+    }
     setApps((prev) =>
       prev.map((app) =>
         app._id === id
@@ -21,15 +32,39 @@ export default function AdminAppsTable({ initialApps }: { initialApps: AppDTO[] 
           : app
       )
     );
+    setBusyId(null);
   };
 
   const deleteApp = async (id: string) => {
-    await fetch(`/api/studio/apps/${id}`, { method: 'DELETE' });
+    const confirmed = window.confirm('Delete this app? This action cannot be undone.');
+    if (!confirmed) return;
+    setBusyId(id);
+    setError(null);
+    const res = await fetch(`/api/studio/apps/${id}`, {
+      method: 'DELETE',
+      credentials: 'include'
+    });
+    if (!res.ok) {
+      const data = await res.json().catch(() => ({}));
+      setError(data?.error ?? 'Failed to delete.');
+      setBusyId(null);
+      return;
+    }
     setApps((prev) => prev.filter((app) => app._id !== id));
+    setBusyId(null);
   };
+
+  if (!apps || apps.length === 0) {
+    return (
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-sm text-muted">
+        No apps found yet.
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
+      {error && <div className="rounded-2xl border border-red-400/30 bg-red-500/10 p-3 text-xs text-red-200">{error}</div>}
       <div className="flex justify-end">
         <Link href="/studio/apps/new">
           <Button>+ New App</Button>
@@ -66,16 +101,16 @@ export default function AdminAppsTable({ initialApps }: { initialApps: AppDTO[] 
                     <Button variant="secondary">Edit</Button>
                   </Link>
                   {app.status === 'published' ? (
-                    <Button variant="ghost" onClick={() => updateStatus(app._id, 'unpublish')}>
-                      Unpublish
+                    <Button variant="ghost" onClick={() => updateStatus(app._id, 'unpublish')} disabled={busyId === app._id}>
+                      {busyId === app._id ? 'Saving...' : 'Unpublish'}
                     </Button>
                   ) : (
-                    <Button variant="secondary" onClick={() => updateStatus(app._id, 'publish')}>
-                      Publish
+                    <Button variant="secondary" onClick={() => updateStatus(app._id, 'publish')} disabled={busyId === app._id}>
+                      {busyId === app._id ? 'Saving...' : 'Publish'}
                     </Button>
                   )}
-                  <Button variant="ghost" onClick={() => deleteApp(app._id)}>
-                    Delete
+                  <Button variant="ghost" onClick={() => deleteApp(app._id)} disabled={busyId === app._id}>
+                    {busyId === app._id ? 'Deleting...' : 'Delete'}
                   </Button>
                 </td>
               </tr>

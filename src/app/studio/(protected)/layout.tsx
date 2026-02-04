@@ -1,6 +1,13 @@
+import { redirect } from 'next/navigation';
 import AdminHeader from '@/components/admin/AdminHeader';
+import { requireAdminSession } from '@/lib/auth-helpers';
 
-export default function StudioLayout({ children }: { children: React.ReactNode }) {
+export default async function StudioLayout({ children }: { children: React.ReactNode }) {
+  const session = await requireAdminSession();
+  if (!session) {
+    redirect('/studio/login');
+  }
+
   return (
     <div className="min-h-screen">
       <AdminHeader />

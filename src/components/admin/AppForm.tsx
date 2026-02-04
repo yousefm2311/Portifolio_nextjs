@@ -224,54 +224,56 @@ export default function AppForm({
       </div>
 
       {tab === 'basic' && (
-        <div className="grid gap-4 md:grid-cols-2">
-          <Input placeholder="Title (Arabic) *" value={form.title} onChange={(e) => updateField('title', e.target.value)} />
-          <Input placeholder="Title (EN)" value={form.titleEn ?? ''} onChange={(e) => updateField('titleEn', e.target.value)} />
-          <Input placeholder="Slug *" value={form.slug} onChange={(e) => updateField('slug', e.target.value)} />
-          <Select value={form.category} onChange={(e) => updateField('category', e.target.value)}>
-            {['Flutter', 'Backend', 'Admin', 'Tools', 'DevOps'].map((cat) => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </Select>
-          <Input
-            placeholder="Tags (comma)"
-            value={tagsString}
-            onChange={(e) =>
-              updateField(
-                'tags',
-                e.target.value
-                  .split(',')
-                  .map((v) => v.trim())
-                  .filter(Boolean)
-              )
-            }
-          />
-          <Input
-            placeholder="Tech stack (comma)"
-            value={techString}
-            onChange={(e) =>
-              updateField(
-                'techStack',
-                e.target.value
-                  .split(',')
-                  .map((v) => v.trim())
-                  .filter(Boolean)
-              )
-            }
-          />
-          <Textarea className="md:col-span-2" rows={3} placeholder="Short description *" value={form.shortDesc} onChange={(e) => updateField('shortDesc', e.target.value)} />
-          <Textarea className="md:col-span-2" rows={6} placeholder="Description (Markdown) *" value={form.description} onChange={(e) => updateField('description', e.target.value)} />
-          <Select value={form.status} onChange={(e) => updateField('status', e.target.value)}>
-            <option value="draft">Draft</option>
-            <option value="published">Published</option>
-          </Select>
+        <div className="glass rounded-2xl p-5">
+          <div className="grid gap-4 md:grid-cols-2">
+            <Input placeholder="Title (Arabic) *" value={form.title} onChange={(e) => updateField('title', e.target.value)} />
+            <Input placeholder="Title (EN)" value={form.titleEn ?? ''} onChange={(e) => updateField('titleEn', e.target.value)} />
+            <Input placeholder="Slug *" value={form.slug} onChange={(e) => updateField('slug', e.target.value)} />
+            <Select value={form.category} onChange={(e) => updateField('category', e.target.value)}>
+              {['Flutter', 'Backend', 'Admin', 'Tools', 'DevOps'].map((cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              ))}
+            </Select>
+            <Input
+              placeholder="Tags (comma)"
+              value={tagsString}
+              onChange={(e) =>
+                updateField(
+                  'tags',
+                  e.target.value
+                    .split(',')
+                    .map((v) => v.trim())
+                    .filter(Boolean)
+                )
+              }
+            />
+            <Input
+              placeholder="Tech stack (comma)"
+              value={techString}
+              onChange={(e) =>
+                updateField(
+                  'techStack',
+                  e.target.value
+                    .split(',')
+                    .map((v) => v.trim())
+                    .filter(Boolean)
+                )
+              }
+            />
+            <Textarea className="md:col-span-2" rows={3} placeholder="Short description *" value={form.shortDesc} onChange={(e) => updateField('shortDesc', e.target.value)} />
+            <Textarea className="md:col-span-2" rows={6} placeholder="Description (Markdown) *" value={form.description} onChange={(e) => updateField('description', e.target.value)} />
+            <Select value={form.status} onChange={(e) => updateField('status', e.target.value)}>
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+            </Select>
+          </div>
         </div>
       )}
 
       {tab === 'media' && (
-        <div className="space-y-6">
+        <div className="glass rounded-2xl p-5 space-y-6">
           <MediaUploader
             label="App Icon"
             value={form.media.icon ?? undefined}
@@ -311,7 +313,7 @@ export default function AppForm({
       )}
 
       {tab === 'demo' && (
-        <div className="space-y-4">
+        <div className="glass rounded-2xl p-5 space-y-4">
           <Select value={form.demo.type} onChange={(e) => updateDemo('type', e.target.value)}>
             <option value="video">Video</option>
             <option value="flutter_web">Flutter Web</option>
@@ -462,7 +464,7 @@ export default function AppForm({
       )}
 
       {tab === 'case' && (
-        <div className="space-y-4">
+        <div className="glass rounded-2xl p-5 space-y-4">
           <Textarea rows={3} placeholder="Problem *" value={form.caseStudy.problem} onChange={(e) => updateCaseStudy('problem', e.target.value)} />
           <Textarea rows={3} placeholder="Solution *" value={form.caseStudy.solution} onChange={(e) => updateCaseStudy('solution', e.target.value)} />
           <Textarea rows={3} placeholder="Architecture *" value={form.caseStudy.architecture} onChange={(e) => updateCaseStudy('architecture', e.target.value)} />
@@ -472,7 +474,7 @@ export default function AppForm({
       )}
 
       {tab === 'extras' && (
-        <div className="space-y-6">
+        <div className="glass rounded-2xl p-5 space-y-6">
           <div className="grid gap-4 md:grid-cols-2">
             <Input placeholder="Live Demo URL" value={form.links.liveDemoUrl ?? ''} onChange={(e) => updateLinks('liveDemoUrl', e.target.value)} />
             <Input placeholder="GitHub URL" value={form.links.githubUrl ?? ''} onChange={(e) => updateLinks('githubUrl', e.target.value)} />

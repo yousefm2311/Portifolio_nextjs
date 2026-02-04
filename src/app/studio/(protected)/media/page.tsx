@@ -8,7 +8,8 @@ export default async function StudioMediaPage() {
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="space-y-2">
+        <p className="text-xs uppercase tracking-widest text-white/60">Studio</p>
         <h1 className="text-2xl font-semibold">مكتبة الوسائط</h1>
         <p className="text-muted">إدارة الصور والفيديوهات المرفوعة.</p>
       </div>

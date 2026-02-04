@@ -1,13 +1,12 @@
 import { notFound } from 'next/navigation';
-import SiteHeader from '@/components/SiteHeader';
-import SiteFooter from '@/components/SiteFooter';
 import AppDetailView from '@/components/AppDetailView';
 import { getAppBySlug } from '@/lib/app-service';
 
 export const dynamic = 'force-dynamic';
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const app = await getAppBySlug(params.slug);
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params;
+  const app = await getAppBySlug(resolvedParams.slug);
   if (!app) return {};
 
   return {
@@ -21,15 +20,14 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function AppDetailPage({ params }: { params: { slug: string } }) {
-  const app = await getAppBySlug(params.slug);
+export default async function AppDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  const resolvedParams = await params;
+  const app = await getAppBySlug(resolvedParams.slug);
   if (!app) return notFound();
 
   return (
     <div className="min-h-screen">
-      <SiteHeader />
       <AppDetailView app={app} />
-      <SiteFooter />
     </div>
   );
 }

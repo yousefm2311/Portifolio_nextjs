@@ -8,12 +8,17 @@ export default function Iphone17ProMaxFrame({
   className?: string;
 }) {
   return (
-    <div className={cn('relative mx-auto w-full max-w-sm', className)}>
-      <div className="relative rounded-[2.9rem] bg-gradient-to-br from-[#2b3036] via-[#0f1216] to-[#1d2228] p-[10px] shadow-[0_35px_90px_rgba(4,12,24,0.6)]">
+    <div
+      className={cn(
+        'relative mx-auto w-full max-w-[360px] origin-top scale-[0.92] sm:scale-[0.95] lg:scale-100',
+        className
+      )}
+    >
+      <div className="relative rounded-[2.9rem] bg-gradient-to-br from-ink-800 via-ink-900 to-ink-700 p-[10px] shadow-[0_35px_90px_rgba(4,12,24,0.6)]">
         <div className="absolute inset-[7px] rounded-[2.65rem] border border-white/10" />
         <div className="absolute inset-[11px] rounded-[2.45rem] border border-white/5" />
 
-        <div className="relative rounded-[2.55rem] bg-black p-[6px]">
+        <div className="relative rounded-[2.55rem] bg-ink-900 p-[6px]">
           {/* Dynamic Island */}
           <div className="absolute left-1/2 top-[10px] z-10 h-[26px] w-[120px] -translate-x-1/2 rounded-[999px] bg-black shadow-[inset_0_0_0_1px_rgba(255,255,255,0.12)]" />
           <div className="absolute left-1/2 top-[18px] z-10 h-[6px] w-[36px] -translate-x-1/2 rounded-full bg-white/10" />
@@ -25,7 +30,9 @@ export default function Iphone17ProMaxFrame({
 
           {/* Screen */}
           <div className="mt-8 overflow-hidden rounded-[2.25rem] border border-white/10 bg-surface-900">
-            {children}
+            <div className="relative aspect-[9/19] w-full">
+              <div className="absolute inset-0">{children}</div>
+            </div>
           </div>
         </div>
       </div>

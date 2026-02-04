@@ -16,11 +16,14 @@ export default function Launcher({ apps }: { apps: AppDTO[] }) {
   return (
     <div className="grid gap-8 lg:grid-cols-[1.2fr_0.8fr] items-center">
       <div className="space-y-4">
-        <h2 className="text-2xl font-semibold">{t('launcherTitle')}</h2>
-        <p className="text-muted">{t('launcherSubtitle')}</p>
+        <p className="text-xs uppercase tracking-widest text-white/60">{t('launcherTitle')}</p>
+        <h2 className="text-2xl font-semibold text-shine">{t('launcherSubtitle')}</h2>
         <div className="flex flex-wrap gap-4">
           {apps.slice(0, 4).map((app) => (
-            <div key={app._id} className="glass rounded-2xl p-4">
+            <div
+              key={app._id}
+              className="glass-soft rounded-2xl p-4 transition hover:-translate-y-1 hover:border-white/30"
+            >
               <h3 className="text-lg font-semibold">
                 {locale === 'ar' ? app.title : app.titleEn ?? app.title}
               </h3>

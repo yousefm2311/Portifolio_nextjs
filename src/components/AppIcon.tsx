@@ -20,7 +20,7 @@ export default function AppIcon({
       className={cn('flex flex-col items-center gap-2 text-xs text-white/80')}
       onClick={onClick}
     >
-      <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl bg-white/10">
+      <div className="flex h-14 w-14 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/10 shadow-card">
         {iconUrl ? (
           <Image src={iconUrl} alt={title} width={56} height={56} className="h-full w-full object-cover" />
         ) : (

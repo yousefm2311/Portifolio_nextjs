@@ -55,7 +55,7 @@ export default function CommandPalette() {
         onClick={(event) => event.stopPropagation()}
       >
         <Command
-          className="glass rounded-2xl border border-white/10 p-4 shadow-card"
+          className="glass rounded-3xl border border-white/10 p-4 shadow-card"
           loop
         >
           <div className="flex items-center justify-between mb-3">
@@ -71,7 +71,7 @@ export default function CommandPalette() {
           </div>
           <Command.Input
             placeholder={placeholder}
-            className="w-full rounded-xl border border-white/10 bg-transparent px-4 py-3 text-sm outline-none placeholder:text-muted"
+            className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm outline-none placeholder:text-muted focus:border-accent-400"
           />
           <Command.List className="mt-4 max-h-72 overflow-y-auto no-scrollbar">
             {loading && (

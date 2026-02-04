@@ -38,8 +38,8 @@ export default function AppPreview({ app }: { app: AppDTO }) {
     const encoded = toBase64Url(base);
     const src = `/flutter-proxy/${encoded}/index.html`;
     return (
-      <Iphone17ProMaxFrame className="max-w-[360px]">
-        <div className="aspect-[9/19] w-full">
+      <Iphone17ProMaxFrame>
+        <div className="h-full w-full">
           <iframe src={src} className="h-full w-full" allow="fullscreen" />
         </div>
       </Iphone17ProMaxFrame>
@@ -73,12 +73,12 @@ export default function AppPreview({ app }: { app: AppDTO }) {
       );
     }
     const cover = (
-      <div className="relative aspect-[9/19] w-full overflow-hidden">
+      <div className="relative h-full w-full overflow-hidden">
         <Image src={coverUrl} alt="Cover" fill className="object-cover" sizes="(max-width: 768px) 100vw, 60vw" />
       </div>
     );
     return prefersPhone ? (
-      <Iphone17ProMaxFrame className="max-w-[360px]">{cover}</Iphone17ProMaxFrame>
+      <Iphone17ProMaxFrame>{cover}</Iphone17ProMaxFrame>
     ) : (
       <div className="relative w-full max-w-3xl overflow-hidden rounded-3xl border border-white/10 bg-black/40">
         <div className="aspect-video">{cover}</div>
@@ -114,11 +114,11 @@ export default function AppPreview({ app }: { app: AppDTO }) {
         }}
       />
       {videoError && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/70 p-4 text-center text-xs text-white">
+        <div className="absolute inset-0 flex items-center justify-center bg-black/70 p-4 text-center text-xs text-true-white">
           <div className="space-y-2">
             <p className="font-semibold">تعذر تشغيل الفيديو</p>
             <p>{videoError}</p>
-            <p className="text-white/70">جرّب تحويله إلى H.264 + AAC</p>
+            <p className="text-true-white-70">جرّب تحويله إلى H.264 + AAC</p>
           </div>
         </div>
       )}
@@ -141,13 +141,13 @@ export default function AppPreview({ app }: { app: AppDTO }) {
   );
 
   const videoContent = (
-    <div className="relative aspect-[9/19] w-full overflow-hidden">
+    <div className="relative h-full w-full overflow-hidden">
       {renderVideo()}
     </div>
   );
 
   if (prefersPhone) {
-    return <Iphone17ProMaxFrame className="max-w-[360px]">{videoContent}</Iphone17ProMaxFrame>;
+    return <Iphone17ProMaxFrame>{videoContent}</Iphone17ProMaxFrame>;
   }
 
   return (

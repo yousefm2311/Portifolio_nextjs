@@ -91,7 +91,6 @@ export function MediaUploader({
         />
       </div>
       <p className="text-xs text-muted">Drag & drop files هنا، أو اضغط Upload.</p>
-      <p className="text-xs text-muted">Drag & drop files هنا، أو اضغط Upload.</p>
       {loading && <div className="text-xs text-muted">Uploading... {progress}%</div>}
       {error && <div className="text-xs text-red-300">{error}</div>}
       {value?.url && (

@@ -7,5 +7,9 @@ export default function Card({
   children: React.ReactNode;
   className?: string;
 }) {
-  return <div className={cn('glass rounded-2xl p-6 shadow-card', className)}>{children}</div>;
+  return (
+    <div className={cn('glass rounded-2xl p-6 shadow-card transition', className)}>
+      {children}
+    </div>
+  );
 }

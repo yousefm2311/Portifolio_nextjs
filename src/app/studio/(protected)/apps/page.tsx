@@ -17,7 +17,8 @@ export default async function StudioAppsPage({
 
   return (
     <div className="space-y-6">
-      <div>
+      <div className="space-y-2">
+        <p className="text-xs uppercase tracking-widest text-white/60">Studio</p>
         <h1 className="text-2xl font-semibold">إدارة التطبيقات</h1>
         <p className="text-muted">إنشاء وتعديل ونشر التطبيقات.</p>
       </div>

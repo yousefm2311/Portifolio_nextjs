@@ -8,7 +8,7 @@ import MarkdownRenderer from '@/components/MarkdownRenderer';
 import Button from '@/components/ui/Button';
 
 export default function AppDetailView({ app }: { app: AppDTO }) {
-  const { locale } = useLocale();
+  const { locale, t } = useLocale();
   const title = locale === 'ar' ? app.title : app.titleEn ?? app.title;
   const labels = {
     screenshots: locale === 'ar' ? 'لقطات الشاشة' : 'Screenshots',
@@ -21,33 +21,38 @@ export default function AppDetailView({ app }: { app: AppDTO }) {
   };
 
   return (
-    <main className="mx-auto max-w-6xl px-4 py-16 space-y-10">
+    <main className="mx-auto max-w-6xl space-y-10 px-4 py-16">
       <div className="space-y-4">
+        <p className="text-xs uppercase tracking-widest text-white/60">
+          {locale === 'ar' ? 'تفاصيل المشروع' : 'Project Details'}
+        </p>
         <h1 className="text-4xl font-semibold">{title}</h1>
         <p className="text-muted">{app.shortDesc}</p>
         <div className="flex flex-wrap gap-3">
           {app.links?.liveDemoUrl && (
             <a href={app.links.liveDemoUrl} target="_blank" rel="noreferrer">
-              <Button>Open Fullscreen Demo</Button>
+              <Button>{t('openFullscreen')}</Button>
             </a>
           )}
           {app.links?.githubUrl && (
             <a href={app.links.githubUrl} target="_blank" rel="noreferrer">
-              <Button variant="secondary">View GitHub</Button>
+              <Button variant="secondary">{t('viewGithub')}</Button>
             </a>
           )}
         </div>
       </div>
 
-      <AppPreview app={app} />
+      <div className="glass rounded-3xl p-6">
+        <AppPreview app={app} />
+      </div>
 
       <section className="grid gap-6 lg:grid-cols-2">
         <div className="glass rounded-2xl p-6">
-          <h2 className="text-xl font-semibold mb-4">{labels.screenshots}</h2>
+          <h2 className="mb-4 text-xl font-semibold">{labels.screenshots}</h2>
           <Gallery items={app.media.gallery ?? []} mode={app.mediaDisplay?.gallery ?? 'phone'} />
         </div>
         <div className="glass rounded-2xl p-6">
-          <h2 className="text-xl font-semibold mb-4">{labels.caseStudy}</h2>
+          <h2 className="mb-4 text-xl font-semibold">{labels.caseStudy}</h2>
           <div className="space-y-3 text-sm text-muted">
             <p><strong>{labels.problem}:</strong> {app.caseStudy.problem}</p>
             <p><strong>{labels.solution}:</strong> {app.caseStudy.solution}</p>

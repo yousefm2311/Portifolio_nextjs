@@ -15,8 +15,8 @@ export default function Chip({
       className={cn(
         'rounded-full border px-4 py-1.5 text-xs font-semibold transition',
         active
-          ? 'border-accent-400 bg-accent-400/15 text-white'
-          : 'border-white/10 text-white/70 hover:border-white/30'
+          ? 'border-accent-400 bg-accent-400/20 text-white shadow-glow'
+          : 'border-white/10 text-white/70 hover:border-white/30 hover:bg-white/5'
       )}
     >
       {label}

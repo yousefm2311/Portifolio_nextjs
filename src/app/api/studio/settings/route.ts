@@ -6,9 +6,39 @@ import { sanitizeObject } from '@/lib/sanitize';
 
 export const runtime = 'nodejs';
 
+const localizedListSchema = z.object({
+  ar: z.array(z.string()),
+  en: z.array(z.string())
+});
+
+const impactItemSchema = z.object({
+  value: z.string(),
+  label: z.string()
+});
+
+const localizedImpactSchema = z.object({
+  ar: z.array(impactItemSchema),
+  en: z.array(impactItemSchema)
+});
+
+const timelineItemSchema = z.object({
+  year: z.string(),
+  title: z.string(),
+  desc: z.string()
+});
+
+const localizedTimelineSchema = z.object({
+  ar: z.array(timelineItemSchema),
+  en: z.array(timelineItemSchema)
+});
+
 const schema = z.object({
   cvMediaId: z.string().optional().nullable(),
-  cvUrl: z.string().url().optional().nullable()
+  cvUrl: z.string().url().optional().nullable(),
+  heroBadges: localizedListSchema.optional().nullable(),
+  impactItems: localizedImpactSchema.optional().nullable(),
+  techMarquee: localizedListSchema.optional().nullable(),
+  timeline: localizedTimelineSchema.optional().nullable()
 });
 
 export async function GET(req: Request) {

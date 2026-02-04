@@ -12,21 +12,21 @@ const config: Config = {
     extend: {
       colors: {
         ink: {
-          900: '#0B1B3A',
-          800: '#12264D',
-          700: '#1A3470',
-          100: '#E9F0FF'
+          900: 'rgb(var(--ink-900) / <alpha-value>)',
+          800: 'rgb(var(--ink-800) / <alpha-value>)',
+          700: 'rgb(var(--ink-700) / <alpha-value>)',
+          100: 'rgb(var(--ink-100) / <alpha-value>)'
         },
         accent: {
-          500: '#3BA0FF',
-          400: '#65B6FF',
-          300: '#8CC9FF'
+          500: 'rgb(var(--accent-500) / <alpha-value>)',
+          400: 'rgb(var(--accent-400) / <alpha-value>)',
+          300: 'rgb(var(--accent-300) / <alpha-value>)'
         },
         surface: {
-          900: '#091126',
-          800: '#0E1B3A',
-          700: '#152951',
-          100: '#F4F7FF'
+          900: 'rgb(var(--surface-900) / <alpha-value>)',
+          800: 'rgb(var(--surface-800) / <alpha-value>)',
+          700: 'rgb(var(--surface-700) / <alpha-value>)',
+          100: 'rgb(var(--surface-100) / <alpha-value>)'
         }
       },
       fontFamily: {
@@ -34,8 +34,8 @@ const config: Config = {
         arabic: ['var(--font-ar)', 'system-ui', 'sans-serif']
       },
       boxShadow: {
-        glow: '0 0 40px rgba(59, 160, 255, 0.35)',
-        card: '0 20px 50px rgba(5, 20, 45, 0.35)'
+        glow: '0 0 40px rgb(var(--accent-500) / 0.45)',
+        card: '0 20px 50px rgb(var(--shadow) / 0.35)'
       },
       borderRadius: {
         xl: '1rem',

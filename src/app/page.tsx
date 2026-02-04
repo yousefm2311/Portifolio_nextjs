@@ -1,9 +1,9 @@
-import SiteHeader from '@/components/SiteHeader';
-import SiteFooter from '@/components/SiteFooter';
 import Launcher from '@/components/Launcher';
 import Hero from '@/components/Hero';
 import FeaturedApps from '@/components/FeaturedApps';
 import TimelineSection from '@/components/TimelineSection';
+import ImpactStrip from '@/components/ImpactStrip';
+import TechMarquee from '@/components/TechMarquee';
 import { getPublishedApps } from '@/lib/app-service';
 import { getSettings } from '@/lib/settings-service';
 
@@ -16,20 +16,20 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-screen">
-      <SiteHeader />
-
       <main className="mx-auto max-w-6xl px-4">
-        <Hero cvUrl={cvUrl} />
+        <Hero cvUrl={cvUrl} badges={settings?.heroBadges ?? null} />
+        <section className="space-y-6 pb-10">
+          <ImpactStrip items={settings?.impactItems ?? null} />
+          <TechMarquee items={settings?.techMarquee ?? null} />
+        </section>
         <FeaturedApps apps={items} />
 
         <section id="launcher" className="py-20">
           <Launcher apps={items} />
         </section>
 
-        <TimelineSection />
+        <TimelineSection items={settings?.timeline ?? null} />
       </main>
-
-      <SiteFooter />
     </div>
   );
 }
