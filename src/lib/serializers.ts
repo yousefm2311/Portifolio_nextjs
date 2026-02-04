@@ -14,6 +14,10 @@ export function normalizeMedia(input: any): MediaDTO | undefined {
   if (typeof input === 'string') {
     return undefined;
   }
+  if (typeof input === 'object' && !('url' in input)) {
+    return undefined;
+  }
+  if (!input.url) return undefined;
   return {
     _id: input._id?.toString() ?? input.id ?? '',
     type: input.type,

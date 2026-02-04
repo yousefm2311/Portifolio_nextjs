@@ -72,12 +72,23 @@ const normalizeNotes = (value?: LocalizedNotes | null): LocalizedNotes | null =>
   };
 };
 
+const resolveMediaId = (value: any) => {
+  if (!value) return null;
+  if (typeof value === 'string') return value;
+  if (typeof value === 'object') {
+    if ('_id' in value && value._id) return value._id.toString();
+    if (typeof value.toString === 'function') return value.toString();
+  }
+  return null;
+};
+
 const normalizeCardList = (list?: LocalizedCardList | null): LocalizedCardList | null => {
   if (!list) return null;
   const mapItem = (item: any) => ({
     title: item?.title ? `${item.title}` : '',
     desc: item?.desc ? `${item.desc}` : '',
     icon: item?.icon ? `${item.icon}` : '',
+    mediaId: resolveMediaId(item?.mediaId),
     media: normalizeMedia(item?.mediaId)
   });
   return {
@@ -137,6 +148,7 @@ const normalizeServices = (list?: LocalizedServices | null): LocalizedServices |
 export async function getSettings() {
   await connectToDatabase();
   const doc = await SiteSettings.findOne()
+    .sort({ updatedAt: -1 })
     .populate([
       { path: 'cvMediaId' },
       { path: 'capabilitiesItems.ar.mediaId', strictPopulate: false },
@@ -192,7 +204,7 @@ export async function upsertSettings(payload: {
   const updated = await SiteSettings.findOneAndUpdate(
     {},
     { $set: payload },
-    { upsert: true, new: true, strict: false }
+    { upsert: true, new: true, strict: false, sort: { updatedAt: -1 } }
   )
     .populate([
       { path: 'cvMediaId' },

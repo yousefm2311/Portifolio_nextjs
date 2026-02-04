@@ -360,7 +360,7 @@ export default function AdminSettingsForm({
         title: item.title.trim(),
         desc: item.desc.trim(),
         icon: item.icon?.trim() ?? '',
-        mediaId: item.media?._id ?? null
+        mediaId: item.mediaId ?? item.media?._id ?? null
       }))
       .filter((item) => item.title && item.desc),
     en: list.en
@@ -368,7 +368,7 @@ export default function AdminSettingsForm({
         title: item.title.trim(),
         desc: item.desc.trim(),
         icon: item.icon?.trim() ?? '',
-        mediaId: item.media?._id ?? null
+        mediaId: item.mediaId ?? item.media?._id ?? null
       }))
       .filter((item) => item.title && item.desc)
   });
@@ -587,7 +587,7 @@ export default function AdminSettingsForm({
   ) => {
     setter((prev) => {
       const next = { ...prev, [locale]: [...prev[locale]] };
-      next[locale][index] = { ...next[locale][index], media };
+      next[locale][index] = { ...next[locale][index], media, mediaId: media._id };
       return next;
     });
   };

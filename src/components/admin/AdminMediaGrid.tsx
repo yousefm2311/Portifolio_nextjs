@@ -67,7 +67,7 @@ export default function AdminMediaGrid({ initialMedia }: { initialMedia: MediaDT
       <div className="grid gap-4 md:grid-cols-3">
         {media.map((item) => (
           <div key={item._id} className="glass rounded-2xl overflow-hidden">
-            <div className="relative h-40">
+            <div className="relative h-40" suppressHydrationWarning>
               {item.type === 'video' ? (
                 <video src={item.url} className="h-full w-full object-cover" />
               ) : (

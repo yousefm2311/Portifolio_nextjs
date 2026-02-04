@@ -4,6 +4,9 @@ import { getRequestIp, rateLimit } from '@/lib/rate-limit';
 export const runtime = 'nodejs';
 
 async function enforceLimit(req: Request) {
+  if (process.env.NODE_ENV !== 'production') {
+    return null;
+  }
   const ip = getRequestIp(req);
   const limit = rateLimit(`auth:${ip}`, 20);
   if (!limit.allowed) {
