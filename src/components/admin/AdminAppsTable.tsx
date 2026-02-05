@@ -56,8 +56,11 @@ export default function AdminAppsTable({ initialApps }: { initialApps: AppDTO[] 
 
   if (!apps || apps.length === 0) {
     return (
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-sm text-muted">
-        No apps found yet.
+      <div className="rounded-2xl border border-white/10 bg-white/5 p-6 text-sm text-muted space-y-4">
+        <p>No apps found yet.</p>
+        <Link href="/studio/apps/new">
+          <Button>+ New App</Button>
+        </Link>
       </div>
     );
   }

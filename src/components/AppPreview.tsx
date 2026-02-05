@@ -63,6 +63,7 @@ export default function AppPreview({ app }: { app: AppDTO }) {
   }
 
   const prefersPhone = app.mediaDisplay?.cover !== 'full';
+  const mediaFitClass = 'object-contain';
 
   if (!videoUrl) {
     if (!coverUrl) {
@@ -73,8 +74,14 @@ export default function AppPreview({ app }: { app: AppDTO }) {
       );
     }
     const cover = (
-      <div className="relative h-full w-full overflow-hidden">
-        <Image src={coverUrl} alt="Cover" fill className="object-cover" sizes="(max-width: 768px) 100vw, 60vw" />
+      <div className="relative h-full w-full overflow-hidden bg-black/60">
+        <Image
+          src={coverUrl}
+          alt="Cover"
+          fill
+          className={mediaFitClass}
+          sizes="(max-width: 768px) 100vw, 60vw"
+        />
       </div>
     );
     return prefersPhone ? (
@@ -87,12 +94,12 @@ export default function AppPreview({ app }: { app: AppDTO }) {
   }
 
   const renderVideo = (className?: string) => (
-    <div className={cn('relative w-full h-full', className)}>
+    <div className={cn('relative w-full h-full bg-black/60', className)}>
       <video
         ref={videoRef}
         key={videoUrl}
         src={videoUrl}
-        className="h-full w-full object-cover"
+        className={`h-full w-full ${mediaFitClass}`}
         controls
         preload="auto"
         playsInline
