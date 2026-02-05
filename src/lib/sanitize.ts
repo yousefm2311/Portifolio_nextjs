@@ -17,7 +17,7 @@ export function sanitizeMarkdown(value: string) {
 }
 
 export function sanitizeObject<T extends UnknownRecord>(obj: T): T {
-  const cleaned: UnknownRecord = Array.isArray(obj) ? [] : {};
+  const cleaned: UnknownRecord = Array.isArray(obj) ? ({} as UnknownRecord) : {};
   Object.entries(obj).forEach(([key, val]) => {
     if (typeof val === 'string') {
       cleaned[key] = stripAll(val);

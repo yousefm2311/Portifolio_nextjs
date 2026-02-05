@@ -31,10 +31,10 @@ async function probeVideo(filePath: string): Promise<ProbeInfo> {
     return { hasVideo: true };
   }
   return new Promise((resolve, reject) => {
-    ffmpeg.ffprobe(filePath, (err, data) => {
+    ffmpeg.ffprobe(filePath, (err: Error | null, data: any) => {
       if (err) return reject(err);
-      const videoStream = data.streams.find((s) => s.codec_type === 'video');
-      const audioStream = data.streams.find((s) => s.codec_type === 'audio');
+      const videoStream = data.streams.find((s: any) => s.codec_type === 'video');
+      const audioStream = data.streams.find((s: any) => s.codec_type === 'audio');
       resolve({
         hasVideo: Boolean(videoStream),
         videoCodec: videoStream?.codec_name,
@@ -79,7 +79,7 @@ export async function ensureMp4H264(buffer: Buffer, originalName?: string) {
         ffmpeg(inputPath)
           .outputOptions(['-c copy', '-movflags +faststart'])
           .on('end', () => resolve())
-          .on('error', (err) => reject(err))
+          .on('error', (err: Error) => reject(err))
           .save(outputPath);
       });
     } else {
@@ -95,7 +95,7 @@ export async function ensureMp4H264(buffer: Buffer, originalName?: string) {
             '-movflags +faststart'
           ])
           .on('end', () => resolve())
-          .on('error', (err) => reject(err))
+          .on('error', (err: Error) => reject(err))
           .save(outputPath);
       });
     }

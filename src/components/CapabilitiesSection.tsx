@@ -3,6 +3,7 @@
 import { useLocale } from '@/components/LocaleProvider';
 import Image from 'next/image';
 import { Layers, Rocket, ShieldCheck, Sparkles, Code2, Zap, Layout, Workflow } from 'lucide-react';
+import type { LucideIcon } from 'lucide-react';
 import type { LocalizedSectionIntro, LocalizedNotes, LocalizedCardList } from '@/lib/types';
 
 const defaultIntro: LocalizedSectionIntro = {
@@ -44,8 +45,8 @@ const defaultItems: LocalizedCardList = {
   ]
 };
 
-const icons = [Layers, Sparkles, ShieldCheck, Rocket];
-const iconMap: Record<string, React.ComponentType<{ size?: number }>> = {
+const icons: LucideIcon[] = [Layers, Sparkles, ShieldCheck, Rocket];
+const iconMap: Record<string, LucideIcon> = {
   layers: Layers,
   sparkles: Sparkles,
   shield: ShieldCheck,

@@ -156,7 +156,7 @@ export async function getSettings() {
       { path: 'processSteps.ar.mediaId', strictPopulate: false },
       { path: 'processSteps.en.mediaId', strictPopulate: false }
     ])
-    .lean();
+    .lean<Record<string, any>>();
 
   if (!doc) return null;
   return {
@@ -213,7 +213,9 @@ export async function upsertSettings(payload: {
       { path: 'processSteps.ar.mediaId', strictPopulate: false },
       { path: 'processSteps.en.mediaId', strictPopulate: false }
     ])
-    .lean();
+    .lean<Record<string, any>>();
+
+  if (!updated) return null;
 
   return {
     _id: updated._id?.toString() ?? updated.id,

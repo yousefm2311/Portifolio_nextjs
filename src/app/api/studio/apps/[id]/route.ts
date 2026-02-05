@@ -24,7 +24,7 @@ export async function PATCH(req: Request, { params }: { params: Promise<{ id: st
   const cleaned = sanitizeObject(parsed.data);
   if (cleaned.slug) cleaned.slug = cleaned.slug.toLowerCase();
   if (cleaned.status === 'published') {
-    cleaned.publishedAt = new Date();
+    (cleaned as Record<string, unknown>).publishedAt = new Date();
   }
   await connectToDatabase();
   const resolved = await params;

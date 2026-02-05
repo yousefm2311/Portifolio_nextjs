@@ -1,7 +1,7 @@
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import crypto from 'node:crypto';
-import AdmZip from 'adm-zip';
+import AdmZip, { IZipEntry } from 'adm-zip';
 import { getR2PublicUrl, uploadToR2, getR2Client } from '@/lib/r2';
 import { getOssClient, getOssPublicBaseUrl, uploadToOSS } from '@/lib/oss';
 
@@ -29,7 +29,7 @@ function guessContentType(name: string) {
   return contentTypes[ext] ?? 'application/octet-stream';
 }
 
-function normalizeEntries(entries: AdmZip.IZipEntry[]) {
+function normalizeEntries(entries: IZipEntry[]) {
   const files = entries.filter((e) => !e.isDirectory);
   let names = files.map((e) => e.entryName.replace(/\\/g, '/'));
 

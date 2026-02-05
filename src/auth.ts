@@ -27,17 +27,16 @@ const providers = [
   })
 ];
 
-if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
-  providers.push(
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET
-    })
-  );
-}
+const googleProvider =
+  process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+    ? Google({
+        clientId: process.env.GOOGLE_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_CLIENT_SECRET
+      })
+    : null;
 
 export const authConfig = {
-  providers,
+  providers: googleProvider ? [...providers, googleProvider] : providers,
   session: { strategy: 'jwt' },
   pages: {
     signIn: '/studio/login'

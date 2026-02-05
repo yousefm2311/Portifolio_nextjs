@@ -1,13 +1,14 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { getAppBySlug } from '@/lib/app-service';
 
 export const runtime = 'nodejs';
 
 export async function GET(
-  req: Request,
-  { params }: { params: { slug: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ slug: string }> }
 ) {
-  const app = await getAppBySlug(params.slug);
+  const resolvedParams = await params;
+  const app = await getAppBySlug(resolvedParams.slug);
   if (!app) {
     return NextResponse.json({ error: 'Not found' }, { status: 404 });
   }

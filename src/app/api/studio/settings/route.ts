@@ -59,8 +59,8 @@ const notesSchema = z.object({
 const cardItemSchema = z.object({
   title: z.string(),
   desc: z.string(),
-  icon: z.string().optional().nullable(),
-  mediaId: z.string().optional().nullable()
+  icon: z.string().nullish().transform((value) => value ?? undefined),
+  mediaId: z.string().nullish().transform((value) => value ?? undefined)
 });
 
 const cardListSchema = z.object({
@@ -90,7 +90,7 @@ const resourceItemSchema = z.object({
   desc: z.string(),
   url: z.string().url(),
   type: z.enum(['guide', 'link', 'tool', 'file', 'video']),
-  badge: z.string().optional().nullable()
+  badge: z.string().nullish().transform((value) => value ?? undefined)
 });
 
 const resourcesSchema = z.object({
@@ -103,7 +103,7 @@ const servicePlanSchema = z.object({
   price: z.string(),
   description: z.string(),
   features: z.array(z.string()),
-  highlight: z.boolean().optional().nullable()
+  highlight: z.boolean().nullish().transform((value) => value ?? undefined)
 });
 
 const servicesSchema = z.object({

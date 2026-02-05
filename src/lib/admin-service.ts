@@ -2,9 +2,16 @@ import bcrypt from 'bcryptjs';
 import { connectToDatabase } from './db';
 import { AdminUser } from '@/models/AdminUser';
 
-export async function getAdminByEmail(email: string) {
+type AdminRecord = {
+  _id: { toString(): string };
+  email: string;
+  name?: string | null;
+  passwordHash: string;
+};
+
+export async function getAdminByEmail(email: string): Promise<AdminRecord | null> {
   await connectToDatabase();
-  return AdminUser.findOne({ email: email.toLowerCase() }).lean();
+  return AdminUser.findOne({ email: email.toLowerCase() }).lean<AdminRecord>();
 }
 
 export async function verifyAdmin(email: string, password: string) {
