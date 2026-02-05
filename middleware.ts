@@ -23,9 +23,9 @@ const authMiddleware = auth((req) => {
   return NextResponse.next();
 });
 
-export default async function middleware(req: NextRequest) {
+export default async function middleware(req: NextRequest, ctx: unknown) {
   try {
-    return await authMiddleware(req);
+    return await authMiddleware(req, ctx as never);
   } catch {
     if (req.nextUrl.pathname.startsWith('/api/studio')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
