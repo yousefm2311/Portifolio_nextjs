@@ -36,6 +36,8 @@ const googleProvider =
     : null;
 
 export const authConfig = {
+  secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
+  trustHost: true,
   providers: googleProvider ? [...providers, googleProvider] : providers,
   session: { strategy: 'jwt' },
   pages: {

@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '@/auth';
 import { isEmailAllowed } from '@/lib/allowlist';
 
-export default auth((req) => {
+const authMiddleware = auth((req) => {
   const { pathname } = req.nextUrl;
   const isStudio = pathname.startsWith('/studio');
   const isStudioLogin = pathname === '/studio/login';
@@ -22,6 +22,17 @@ export default auth((req) => {
 
   return NextResponse.next();
 });
+
+export default async function middleware(req: NextRequest) {
+  try {
+    return await authMiddleware(req);
+  } catch {
+    if (req.nextUrl.pathname.startsWith('/api/studio')) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    return NextResponse.redirect(new URL('/studio/login', req.url));
+  }
+}
 
 export const config = {
   matcher: ['/studio/:path*', '/api/studio/:path*']

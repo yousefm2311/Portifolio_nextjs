@@ -24,12 +24,12 @@ export default function SiteHeader({
 
   return (
     <header className="sticky top-0 z-40">
-      <div className="mx-auto max-w-6xl px-4 pt-6">
-        <div className="glass flex items-center justify-between rounded-full px-5 py-3 shadow-card">
+      <div className="mx-auto max-w-6xl px-4 pt-4 sm:pt-6">
+        <div className="glass flex flex-col gap-3 rounded-3xl px-4 py-3 shadow-card sm:flex-row sm:items-center sm:justify-between sm:rounded-full sm:px-5">
           <Link href="/" className="text-lg font-semibold tracking-wide">
             Yousef<span className="text-accent-400">.dev</span>
           </Link>
-          <nav className="flex items-center gap-1 text-xs sm:gap-2 sm:text-sm">
+          <nav className="flex w-full items-center gap-1 overflow-x-auto pb-1 text-[11px] no-scrollbar sm:w-auto sm:gap-2 sm:pb-0 sm:text-sm">
             {links.map((link) => {
               const active = pathname === link.href;
               return (
@@ -38,7 +38,7 @@ export default function SiteHeader({
                   href={link.href}
                   aria-current={active ? 'page' : undefined}
                   className={cn(
-                    'relative rounded-full px-4 py-1.5 transition',
+                    'relative whitespace-nowrap rounded-full px-3 py-1.5 transition sm:px-4',
                     active ? 'text-true-white' : 'text-white/70 hover:text-white'
                   )}
                 >
